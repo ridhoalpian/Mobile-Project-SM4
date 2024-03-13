@@ -21,9 +21,11 @@ class LupaPassword extends StatelessWidget {
               fit: BoxFit.contain,
             ),
           ),
+          
           SizedBox(height: 20),
+          
           Text(
-            "Login",
+            "Registrasi",
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -33,44 +35,33 @@ class LupaPassword extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(40, 20, 40, 5),
             child: TextField(
               decoration: InputDecoration(
+                labelText: "Username",
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(40, 0, 40, 5),
+            child: TextField(
+              decoration: InputDecoration(
                 labelText: "Email",
               ),
             ),
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(40, 5, 40, 5),
+            padding: EdgeInsets.fromLTRB(40, 0, 40, 5),
             child: TextField(
               decoration: InputDecoration(
-                labelText: "Password",
-                suffixIcon: IconButton(
-                    onPressed: () {
-                      });
-                    }),
+                labelText: "Nama Unit",
               ),
             ),
           ),
-          ]
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 40),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LupaPassword()),
-                    );
-                  },
-                  child: Text(
-                    "Lupa password?",
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black87,
-                    ),
-                  ),
-                )
-              ],
+          // Masukkan TextField lainnya di sini
+          Container(
+            padding: EdgeInsets.fromLTRB(40, 5, 40, 5),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: "Bantuan Lupa Password",
+              ),
             ),
           ),
           Container(
@@ -80,21 +71,17 @@ class LupaPassword extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF5F7C5D),
                 elevation: 10,
+                backgroundColor: Color(0xFF5F7C5D),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50),
                 ),
               ),
-              child: Text(
-                "Login",
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
+              child: Text("Daftar", style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),),
             ),
           ),
+        ],
+      ),
     );
-  }
+}
 }
