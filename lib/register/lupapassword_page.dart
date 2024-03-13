@@ -5,7 +5,7 @@ class LupaPassword extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lupa Password'),
+        title: Text('reset password'),
       ),
       body: Center(),
     );
