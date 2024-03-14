@@ -67,7 +67,9 @@ class _RegisterPageState extends State<RegisterPage> {
               decoration: InputDecoration(
                 labelText: "Password",
                 suffixIcon: IconButton(
-                  icon: _isObscured ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
+                  icon: _isObscured
+                      ? Icon(Icons.visibility_off)
+                      : Icon(Icons.visibility),
                   onPressed: () {
                     setState(() {
                       _isObscured = !_isObscured;
@@ -99,7 +101,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   borderRadius: BorderRadius.circular(50),
                 ),
               ),
-              child: Text("Daftar", style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),),
+              child: Text(
+                "Daftar",
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
           ),
         ],
