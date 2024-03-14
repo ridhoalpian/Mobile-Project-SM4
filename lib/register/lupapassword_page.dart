@@ -21,11 +21,11 @@ class LupaPassword extends StatelessWidget {
               fit: BoxFit.contain,
             ),
           ),
-          
+
           SizedBox(height: 20),
-          
+
           Text(
-            "Registrasi",
+            "Lupa Password",
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -44,14 +44,6 @@ class LupaPassword extends StatelessWidget {
             child: TextField(
               decoration: InputDecoration(
                 labelText: "Email",
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(40, 0, 40, 5),
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: "Nama Unit",
               ),
             ),
           ),
@@ -77,11 +69,17 @@ class LupaPassword extends StatelessWidget {
                   borderRadius: BorderRadius.circular(50),
                 ),
               ),
-              child: Text("Daftar", style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),),
+              child: Text(
+                "Ubah Password",
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
           ),
         ],
       ),
     );
-}
+  }
 }
