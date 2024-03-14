@@ -42,6 +42,7 @@ class _LoginPageState extends State<LoginPage> {
           Container(
             padding: EdgeInsets.fromLTRB(40, 20, 40, 5),
             child: TextField(
+              keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 labelText: "Email",
               ),
