@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:projectone/register/home_page.dart';
 import 'package:projectone/register/lupapassword_page.dart';
 import 'package:projectone/register/register_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key});
@@ -10,6 +12,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isObscured = true;
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
           Container(
             padding: EdgeInsets.fromLTRB(40, 20, 40, 5),
             child: TextField(
+              controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 labelText: "Email",
@@ -51,6 +56,7 @@ class _LoginPageState extends State<LoginPage> {
           Container(
             padding: EdgeInsets.fromLTRB(40, 5, 40, 5),
             child: TextField(
+              controller: _passwordController,
               obscureText: _isObscured,
               decoration: InputDecoration(
                 labelText: "Password",
@@ -94,7 +100,9 @@ class _LoginPageState extends State<LoginPage> {
             height: 100,
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                _login();
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF5F7C5D),
                 elevation: 10,
@@ -143,4 +151,63 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
+  Future<void> _login() async {
+  String email = _emailController.text.trim();
+  String password = _passwordController.text.trim();
+
+  // Pengecekan kekosongan pada text field email dan password
+  if (email.isEmpty || password.isEmpty) {
+    // Tampilkan alert jika ada field yang kosong
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Isian Kosong"),
+          content: Text("Silakan isi email dan password terlebih dahulu."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+    return; // Keluar dari metode jika ada field yang kosong
+  }
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? savedEmail = prefs.getString('email');
+  String? savedPassword = prefs.getString('password');
+
+  if (savedEmail == email && savedPassword == password) {
+    // Navigasi ke HomePage jika email dan password benar
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );
+  } else {
+    // Tampilkan alert jika email atau password salah
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Email atau Password Salah"),
+          content: Text("Silakan coba lagi."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
+  }
