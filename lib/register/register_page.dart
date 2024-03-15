@@ -8,19 +8,30 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  bool _isObscured = true;
-  TextEditingController _dateController = TextEditingController();
-  TextEditingController _namaController = TextEditingController();
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
-  String _selectedGender = 'laki';
+  bool _isObscured = true; // Variabel untuk mengontrol apakah password tersembunyi atau tidak
+  TextEditingController _dateController = TextEditingController(); // Controller untuk field tanggal lahir
+  TextEditingController _namaController = TextEditingController(); // Controller untuk field nama lengkap
+  TextEditingController _usernameController = TextEditingController(); // Controller untuk field username
+  TextEditingController _emailController = TextEditingController(); // Controller untuk field email
+  TextEditingController _passwordController = TextEditingController(); // Controller untuk field password
+  TextEditingController _confirmPasswordController = TextEditingController(); // Controller untuk field konfirmasi password
+  String _selectedGender = 'laki'; // Variabel untuk menyimpan jenis kelamin yang dipilih
+
+  // Fungsi untuk memeriksa apakah semua data registrasi telah diisi
+  bool _isRegistrationDataComplete() {
+    return _namaController.text.isNotEmpty &&
+        _usernameController.text.isNotEmpty &&
+        _emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty &&
+        _confirmPasswordController.text.isNotEmpty &&
+        _dateController.text.isNotEmpty;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: SingleChildScrollView( // Membungkus konten dalam SingleChildScrollView agar konten dapat di-scroll jika tidak muat dalam layar
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
@@ -46,6 +57,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             SizedBox(height: 20),
+            // Textfield untuk nama lengkap
             Container(
               padding: EdgeInsets.symmetric(horizontal: 40),
               child: TextField(
@@ -55,6 +67,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             ),
+            // Textfield untuk username
             Container(
               padding: EdgeInsets.symmetric(horizontal: 40),
               child: TextField(
@@ -64,6 +77,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             ),
+            // Textfield untuk email
             Container(
               padding: EdgeInsets.symmetric(horizontal: 40),
               child: TextField(
@@ -74,6 +88,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             ),
+            // Textfield untuk password
             Container(
               padding: EdgeInsets.symmetric(horizontal: 40),
               child: TextField(
@@ -86,14 +101,15 @@ class _RegisterPageState extends State<RegisterPage> {
                         : Icon(Icons.visibility),
                     onPressed: () {
                       setState(() {
-                        _isObscured = !_isObscured;
+                        _isObscured = !_isObscured; // Mengubah status tersembunyi atau tidak password
                       });
                     },
                   ),
                 ),
-                obscureText: _isObscured,
+                obscureText: _isObscured, // Menyembunyikan atau menampilkan password tergantung dari status _isObscured
               ),
             ),
+            // Textfield untuk konfirmasi password
             Container(
               padding: EdgeInsets.symmetric(horizontal: 40),
               child: TextField(
@@ -106,14 +122,15 @@ class _RegisterPageState extends State<RegisterPage> {
                         : Icon(Icons.visibility),
                     onPressed: () {
                       setState(() {
-                        _isObscured = !_isObscured;
+                        _isObscured = !_isObscured; // Mengubah status tersembunyi atau tidak password
                       });
                     },
                   ),
                 ),
-                obscureText: _isObscured,
+                obscureText: _isObscured, // Menyembunyikan atau menampilkan password tergantung dari status _isObscured
               ),
             ),
+            // Textfield untuk tanggal lahir
             Container(
               padding: EdgeInsets.symmetric(horizontal: 40),
               child: TextField(
@@ -123,18 +140,19 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 readOnly: true,
                 onTap: () {
-                  _selectedDate();
+                  _selectedDate(); // Menampilkan date picker ketika textfield di-tap
                 },
               ),
             ),
             SizedBox(height: 10),
+            // Dropdown untuk memilih jenis kelamin
             Container(
               padding: EdgeInsets.symmetric(horizontal: 40),
               child: DropdownButtonFormField<String>(
                 value: _selectedGender,
                 onChanged: (String? newValue) {
                   setState(() {
-                    _selectedGender = newValue!;
+                    _selectedGender = newValue!; // Mengubah jenis kelamin yang dipilih
                   });
                 },
                 items: [
@@ -153,18 +171,40 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             SizedBox(height: 20),
+            // Tombol untuk melakukan registrasi
             Container(
               padding: EdgeInsets.symmetric(horizontal: 40),
               height: 50,
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  _saveRegistrationData();
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                    (Route<dynamic> route) => false, 
-                  );
+                  if (_isRegistrationDataComplete()) { // Memeriksa apakah semua data registrasi telah diisi
+                    _saveRegistrationData(); // Menyimpan data registrasi
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      (Route<dynamic> route) => false,
+                    );
+                  } else {
+                    // Tampilkan peringatan jika data belum lengkap
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Data Belum Lengkap"),
+                          content: Text("Silakan lengkapi semua data registrasi."),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Menutup dialog
+                              },
+                              child: Text("OK"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   elevation: 10,
@@ -184,6 +224,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             SizedBox(height: 20),
+            // Tautan untuk login
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -214,9 +255,11 @@ class _RegisterPageState extends State<RegisterPage> {
             SizedBox(height: 20),
           ],
         ),
+      ),
     );
   }
 
+  // Fungsi untuk menampilkan date picker
   Future<void> _selectedDate() async {
     DateTime? _picked = await showDatePicker(
       context: context,
@@ -227,11 +270,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (_picked != null) {
       setState(() {
-        _dateController.text = _picked.toString().split(" ")[0];
+        _dateController.text = _picked.toString().split(" ")[0]; // Mengubah format tanggal yang dipilih
       });
     }
   }
 
+  // Fungsi untuk menyimpan data registrasi ke SharedPreferences
   Future<void> _saveRegistrationData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('nama', _namaController.text);
