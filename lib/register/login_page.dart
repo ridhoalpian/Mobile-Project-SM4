@@ -7,18 +7,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key});
 
+  @override
   _LoginPageState createState() => _LoginPageState();
 }
 
+class User {
+  final String username; //class
+  User({required this.username});
+}
+
 class _LoginPageState extends State<LoginPage> {
-  bool _isObscured = true; // Variabel untuk mengontrol apakah password tersembunyi atau tidak
-  TextEditingController _emailController = TextEditingController(); // Controller untuk field email
-  TextEditingController _passwordController = TextEditingController(); // Controller untuk field password
+  bool _isObscured = true;
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>(); // Key untuk form
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView( // Membungkus konten dalam SingleChildScrollView agar konten dapat di-scroll jika tidak muat dalam layar
+      body: Form(
+        // Wrap seluruh form dengan Form widget
+        key: _formKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -44,38 +53,56 @@ class _LoginPageState extends State<LoginPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            // Textfield untuk email
             Container(
               padding: EdgeInsets.fromLTRB(40, 20, 40, 5),
-              child: TextField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
+              child: TextFormField(
+                controller: _usernameController,
                 decoration: InputDecoration(
-                  labelText: "Email",
+                  labelText: "Username",
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Username harus diisi';
+                  }
+                  // Pattern untuk memeriksa apakah nilai adalah email yang valid
+                  // final emailRegex =
+                  //     RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                  // if (!emailRegex.hasMatch(value)) {
+                  //   return 'Masukkan alamat email yang valid';
+                  // }
+                  return null;
+                },
               ),
             ),
-            // Textfield untuk password
             Container(
               padding: EdgeInsets.fromLTRB(40, 5, 40, 5),
-              child: TextField(
+              child: TextFormField(
                 controller: _passwordController,
-                obscureText: _isObscured, // Menyembunyikan atau menampilkan password tergantung dari status _isObscured
+                obscureText: _isObscured,
                 decoration: InputDecoration(
                   labelText: "Password",
                   suffixIcon: IconButton(
-                      icon: _isObscured
-                          ? Icon(Icons.visibility_off)
-                          : Icon(Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          _isObscured = !_isObscured; // Mengubah status tersembunyi atau tidak password
-                        });
-                      }),
+                    icon: _isObscured
+                        ? Icon(Icons.visibility_off)
+                        : Icon(Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                        _isObscured = !_isObscured;
+                      });
+                    },
+                  ),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password harus diisi';
+                  }
+                  // if (value.length < 8) {
+                  //   return 'Password harus memiliki setidaknya 8 karakter';
+                  // }
+                  return null;
+                },
               ),
             ),
-            // Tautan untuk lupa password
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 40),
               child: Row(
@@ -99,14 +126,13 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-            // Tombol untuk melakukan login
             Container(
               padding: EdgeInsets.fromLTRB(40, 40, 40, 5),
               height: 100,
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  _login(); // Memanggil fungsi untuk melakukan login
+                  _login();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF5F7C5D),
@@ -124,7 +150,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            // Tautan untuk register
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -159,59 +184,43 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Fungsi untuk melakukan login
   Future<void> _login() async {
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
+    if (_formKey.currentState!.validate()) {
+      // Memanggil validate() untuk melakukan validasi
+      String username = _usernameController.text.trim();
+      String password = _passwordController.text.trim();
 
-    if (email.isEmpty || password.isEmpty) { // Memeriksa apakah email dan password telah diisi
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Isian Kosong"),
-            content: Text("Silakan isi email dan password terlebih dahulu."),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Menutup dialog
-                },
-                child: Text("OK"),
-              ),
-            ],
-          );
-        },
-      );
-      return;
-    }
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? savedUsername = prefs.getString('username');
+      String? savedPassword = prefs.getString('password');
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? savedEmail = prefs.getString('email');
-    String? savedPassword = prefs.getString('password');
-
-    if (savedEmail == email && savedPassword == password) { // Memeriksa apakah email dan password yang dimasukkan sesuai dengan data yang disimpan
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()), // Pindah ke halaman home jika login berhasil
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Email atau Password Salah"),
-            content: Text("Silakan coba lagi."),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Menutup dialog
-                },
-                child: Text("OK"),
-              ),
-            ],
-          );
-        },
-      );
+      if (savedUsername == username && savedPassword == password) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(
+                userData: User(username: username)),
+          ),
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Email atau Password Salah"),
+              content: Text("Silakan coba lagi."),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("OK"),
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
   }
 }
