@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:projectone/register/login_page.dart';
+import 'package:projectone/login_register/login_page.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -11,7 +11,7 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _isPasswordObscured = true;
   bool _isConfirmPasswordObscured = true;
   // Variabel untuk mengontrol apakah password tersembunyi atau tidak
-  
+
   TextEditingController _usernameController =
       TextEditingController(); // Controller untuk field username
   TextEditingController _emailUKMController =
@@ -238,6 +238,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         fontSize: 20,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
+                        fontFamily: 'Montserrat'
                       ),
                     ),
                   ),
@@ -265,7 +266,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
-                          decoration: TextDecoration.underline,
                         ),
                       ),
                     ),

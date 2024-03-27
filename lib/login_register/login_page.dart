@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:projectone/register/home_page.dart';
-import 'package:projectone/register/lupapassword_page.dart';
-import 'package:projectone/register/register_page.dart';
+import 'package:projectone/home/home_page.dart';
+import 'package:projectone/login_register/lupapassword_page.dart';
+import 'package:projectone/login_register/register_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
@@ -64,12 +64,6 @@ class _LoginPageState extends State<LoginPage> {
                   if (value == null || value.isEmpty) {
                     return 'Username harus diisi';
                   }
-                  // Pattern untuk memeriksa apakah nilai adalah email yang valid
-                  // final emailRegex =
-                  //     RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                  // if (!emailRegex.hasMatch(value)) {
-                  //   return 'Masukkan alamat email yang valid';
-                  // }
                   return null;
                 },
               ),
@@ -146,7 +140,8 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(
                       fontSize: 20,
                       color: Colors.white,
-                      fontWeight: FontWeight.bold),
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Montserrat'),
                 ),
               ),
             ),
@@ -198,8 +193,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(
-                userData: User(username: username)),
+            builder: (context) => HomePage(userData: User(username: username)),
           ),
         );
       } else {

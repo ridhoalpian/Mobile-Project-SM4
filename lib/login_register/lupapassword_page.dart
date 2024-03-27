@@ -74,7 +74,8 @@ class LupaPassword extends StatelessWidget {
                 style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Montserrat'),
               ),
             ),
           ),
