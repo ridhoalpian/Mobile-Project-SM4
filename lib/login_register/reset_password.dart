@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:projectone/login_register/reset_password.dart';
 
-class LupaPassword extends StatelessWidget {
+class reset_password extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,25 +25,17 @@ class LupaPassword extends StatelessWidget {
           SizedBox(height: 20),
 
           Text(
-            "Lupa Password",
+            "Reset Password",
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(40, 20, 40, 5),
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: "Username",
-              ),
-            ),
-          ),
-          Container(
             padding: EdgeInsets.fromLTRB(40, 0, 40, 5),
             child: TextField(
               decoration: InputDecoration(
-                labelText: "Email",
+                labelText: "Password Baru",
               ),
             ),
           ),
@@ -53,7 +44,7 @@ class LupaPassword extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(40, 5, 40, 5),
             child: TextField(
               decoration: InputDecoration(
-                labelText: "Bantuan Lupa Password",
+                labelText: "Konfirmasi Password Baru",
               ),
             ),
           ),
@@ -62,13 +53,7 @@ class LupaPassword extends StatelessWidget {
             height: 100,
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                // Navigasi ke form ResetPassword
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => reset_password()),
-                );
-              },
+              onPressed: () {},
               style: ElevatedButton.styleFrom(
                 elevation: 10,
                 backgroundColor: Color(0xFF5F7C5D),
@@ -77,7 +62,7 @@ class LupaPassword extends StatelessWidget {
                 ),
               ),
               child: Text(
-                "Ubah Password",
+                "Reset Password",
                 style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,
