@@ -34,12 +34,8 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               width: 60,
               height: 60,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey,
-              ),
               child: Image.asset(
-                'assets/images/logo_bem_polije.jpg',
+                'assets/images/logo_bem_polije.png',
                 width: 40,
                 height: 40,
                 fit: BoxFit.contain,
@@ -49,8 +45,9 @@ class _LoginPageState extends State<LoginPage> {
             Text(
               "Login",
               style: TextStyle(
+                color: Colors.black87,
                 fontSize: 28,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w700,
               ),
             ),
             Container(
@@ -58,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
               child: TextFormField(
                 controller: _usernameController,
                 decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.person, color: Colors.grey),
                   labelText: "Username",
                 ),
                 validator: (value) {
@@ -74,6 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                 controller: _passwordController,
                 obscureText: _isObscured,
                 decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.lock, color: Colors.grey),
                   labelText: "Password",
                   suffixIcon: IconButton(
                     icon: _isObscured
@@ -97,6 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
             ),
+            SizedBox(height: 10),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 40),
               child: Row(
@@ -112,8 +112,9 @@ class _LoginPageState extends State<LoginPage> {
                     child: Text(
                       "Lupa password?",
                       style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.black87,
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
                       ),
                     ),
                   )
@@ -121,8 +122,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(40, 40, 40, 5),
-              height: 100,
+              padding: EdgeInsets.fromLTRB(40, 30, 40, 5),
+              height: 90,
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
@@ -150,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 Text(
                   "Belum punya akun?",
-                  style: TextStyle(fontSize: 16, color: Colors.black87),
+                  style: TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(
                   height: 50,
@@ -166,8 +167,8 @@ class _LoginPageState extends State<LoginPage> {
                     " Register",
                     style: TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
                     ),
                   ),
                 )

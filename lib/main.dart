@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projectone/login_register/login_page.dart';
 import 'package:projectone/login_register/register_page.dart';
 import 'package:projectone/home/home_page.dart';
+import 'package:projectone/login_register/splash.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/', //modalroute
       routes: {
-        '/': (context) => LoginPage(),
+        '/': (context) => Splash(),
+        '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
         '/home': (context) => HomePage(userData: User(username: 'example')),
       },

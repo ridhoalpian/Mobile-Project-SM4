@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:projectone/home/kegiatan_page.dart';
+import 'package:projectone/home/lpj_page.dart';
+import 'package:projectone/home/pendanaan_page.dart';
+import 'package:projectone/home/profile_page.dart';
+import 'package:projectone/home/proker_page.dart';
 import 'package:projectone/login_register/login_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,16 +21,55 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _searchController = TextEditingController();
 
   List<String> _appBarTitles = [
+    'Dashboard',
     'Program Kerja',
     'Pengajuan Kegiatan',
     'History Pendanaan',
-    'Lembar Penanggung Jawaban',
+    'Lembar Pertanggung Jawaban',
     'Profile'
+  ];
+  
+  List<String> _menuTitles = [
+    'Dashboard',
+    'Proker',
+    'Kegiatan',
+    'Pendanaan',
+    'LPJ',
+    'Profile'
+  ];
+
+  List<IconData> _icons = [
+    Icons.dashboard_customize_rounded, // Default icon
+    Icons.book_rounded,
+    Icons.calendar_month_rounded,
+    Icons.monetization_on,
+    Icons.file_copy_rounded,
+    Icons.person_2_rounded,
+  ];
+
+  List<IconData> _selectedIcons = [
+    Icons.dashboard_customize_outlined,
+    Icons.book_outlined,
+    Icons.calendar_month_outlined,
+    Icons.monetization_on_outlined,
+    Icons.file_copy_outlined,
+    Icons.person_2_outlined,
+  ];
+
+  List<IconData> _originalIcons = [
+    Icons.dashboard_customize_outlined,
+    Icons.book_outlined,
+    Icons.calendar_month_outlined,
+    Icons.monetization_on_outlined,
+    Icons.file_copy_outlined,
+    Icons.person_2_outlined,
   ];
 
   @override
   void initState() {
     super.initState();
+    _selectedIcons = List<IconData>.from(_originalIcons);
+    _selectedIcons[0] = _icons[0];
   }
 
   void _onItemTapped(int index) {
@@ -39,9 +83,8 @@ class _HomePageState extends State<HomePage> {
       automaticallyImplyLeading: false,
       title: Text(_appBarTitles[_selectedIndex]),
       titleTextStyle: TextStyle(
-          color: Colors.white, fontSize: 21, fontWeight: FontWeight.bold),
-      backgroundColor: Color(0xFF5F7C5D),
-      iconTheme: IconThemeData(color: Colors.white),
+          color: Colors.black, fontSize: 21, fontWeight: FontWeight.bold),
+      iconTheme: IconThemeData(color: Color(0xFF5F7C5D)),
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.search),
@@ -51,6 +94,11 @@ class _HomePageState extends State<HomePage> {
             });
           },
         ),
+        Divider(
+          color: Colors.grey,
+          thickness: 1.5,
+          height: 30,
+        )
       ],
     );
   }
@@ -90,63 +138,37 @@ class _HomePageState extends State<HomePage> {
         children: [
           Center(
             child: Text(
-              'Tampilan Proker',
+              'Tampilan Dashboard',
               style: TextStyle(fontSize: 20),
             ),
           ),
-          Center(
-            child: Text(
-              'Tampilan Kegiatan',
-              style: TextStyle(fontSize: 20),
-            ),
-          ),
-          Center(
-            child: Text(
-              'Tampilan Pendanaan',
-              style: TextStyle(fontSize: 20),
-            ),
-          ),
-          Center(
-            child: Text(
-              'Tampilan LPJ',
-              style: TextStyle(fontSize: 20),
-            ),
-          ),
-          Center(
-            child: Text(
-              'Tampilan Profile',
-              style: TextStyle(fontSize: 20),
-            ),
-          ),
+          ProkerPage(),
+          KegiatanPage(),
+          DanaPage(),
+          LpjPage(),
+          ProfilePage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Proker',
+        items: List.generate(
+          _menuTitles.length,
+          (index) => BottomNavigationBarItem(
+            icon: Icon(_selectedIcons[index]),
+            label: _menuTitles[index],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Kegiatan',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.attach_money),
-            label: 'Pendanaan',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.file_copy),
-            label: 'LPJ',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+        ),
         currentIndex: _selectedIndex,
         unselectedItemColor: Colors.grey,
         selectedItemColor: Colors.black,
-        onTap: _onItemTapped,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+            // Reset selected icons to the original state
+            _selectedIcons = List<IconData>.from(_originalIcons);
+            // Change the selected icon
+            _selectedIcons[index] = _icons[index];
+          });
+        },
       ),
     );
   }

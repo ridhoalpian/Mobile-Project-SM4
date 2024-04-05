@@ -11,12 +11,8 @@ class LupaPassword extends StatelessWidget {
           Container(
             width: 60,
             height: 60,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.grey,
-            ),
             child: Image.asset(
-              'assets/images/logo_bem_polije.jpg',
+              'assets/images/logo_bem_polije.png',
               width: 40,
               height: 40,
               fit: BoxFit.contain,
