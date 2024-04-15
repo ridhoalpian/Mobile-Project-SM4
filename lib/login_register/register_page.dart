@@ -53,6 +53,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: TextFormField(
                     controller: _usernameController,
                     decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.person, color: Colors.grey),
                       labelText: "Username",
                     ),
                     validator: (value) {
@@ -69,6 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _emailUKMController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.email, color: Colors.grey),
                       labelText: "Email",
                     ),
                     validator: (value) {
@@ -89,6 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: TextFormField(
                     controller: _namaUKMController,
                     decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.home_filled, color: Colors.grey),
                       labelText: "Nama UKM",
                     ),
                     validator: (value) {
@@ -105,6 +108,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _passwordController,
                     obscureText: _isPasswordObscured,
                     decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.lock, color: Colors.grey),
                       labelText: "Password",
                       suffixIcon: IconButton(
                         icon: _isPasswordObscured
@@ -134,6 +138,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _confirmPasswordController,
                     obscureText: _isConfirmPasswordObscured,
                     decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.lock, color: Colors.grey),
                       labelText: "Konfirmasi Password",
                       suffixIcon: IconButton(
                         icon: _isConfirmPasswordObscured
@@ -166,6 +171,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: TextFormField(
                     controller: _bantuanPassController,
                     decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.help, color: Colors.grey),
                       labelText: "Bantuan Lupa Password",
                     ),
                     validator: (value) {

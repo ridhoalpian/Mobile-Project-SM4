@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 
-class reset_password extends StatelessWidget {
+class reset_password extends StatefulWidget {
+  const reset_password({Key? key});
+
+  @override
+  _reset_passwordState createState() => _reset_passwordState();
+}
+
+  class _reset_passwordState extends State<reset_password> {
+    bool _isObscured = true;
+    bool _isconfirmObscured = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,10 +37,22 @@ class reset_password extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(40, 0, 40, 5),
+            padding: EdgeInsets.fromLTRB(40, 20, 40, 5),
             child: TextField(
+              obscureText: _isObscured,
               decoration: InputDecoration(
+                prefixIcon: Icon(Icons.lock, color: Colors.grey),
                 labelText: "Password Baru",
+                suffixIcon: IconButton(
+                    icon: _isObscured
+                        ? Icon(Icons.visibility_off)
+                        : Icon(Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                        _isObscured = !_isObscured;
+                      });
+                    },
+                  ),
               ),
             ),
           ),
@@ -39,8 +60,20 @@ class reset_password extends StatelessWidget {
           Container(
             padding: EdgeInsets.fromLTRB(40, 5, 40, 5),
             child: TextField(
+              obscureText: _isconfirmObscured,
               decoration: InputDecoration(
+                prefixIcon: Icon(Icons.lock, color: Colors.grey),
                 labelText: "Konfirmasi Password Baru",
+                suffixIcon: IconButton(
+                    icon: _isconfirmObscured
+                        ? Icon(Icons.visibility_off)
+                        : Icon(Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                        _isconfirmObscured = !_isconfirmObscured;
+                      });
+                    },
+                  ),
               ),
             ),
           ),

@@ -32,6 +32,7 @@ class LupaPassword extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(40, 20, 40, 5),
             child: TextField(
               decoration: InputDecoration(
+                prefixIcon: Icon(Icons.person, color: Colors.grey),
                 labelText: "Username",
               ),
             ),
@@ -40,6 +41,7 @@ class LupaPassword extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(40, 0, 40, 5),
             child: TextField(
               decoration: InputDecoration(
+                prefixIcon: Icon(Icons.email, color: Colors.grey), 
                 labelText: "Email",
               ),
             ),
@@ -49,6 +51,7 @@ class LupaPassword extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(40, 5, 40, 5),
             child: TextField(
               decoration: InputDecoration(
+                prefixIcon: Icon(Icons.help, color: Colors.grey),
                 labelText: "Bantuan Lupa Password",
               ),
             ),
