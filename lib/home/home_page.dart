@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:projectone/home/kegiatan_page.dart';
-import 'package:projectone/home/lpj_page.dart';
+import 'package:projectone/home/kegiatan/kegiatan_page.dart';
+import 'package:projectone/home/lpj/lpj_page.dart';
 import 'package:projectone/home/pendanaan_page.dart';
 import 'package:projectone/home/profile_page.dart';
-import 'package:projectone/home/proker_page.dart';
+import 'package:projectone/home/proker/proker_page.dart';
 import 'package:projectone/login_register/login_page.dart';
 
 class HomePage extends StatefulWidget {
