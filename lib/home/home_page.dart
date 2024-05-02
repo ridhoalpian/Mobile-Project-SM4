@@ -2,32 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:projectone/home/kegiatan/kegiatan_page.dart';
 import 'package:projectone/home/lpj/lpj_page.dart';
 import 'package:projectone/home/pendanaan_page.dart';
-import 'package:projectone/home/profile_page.dart';
+import 'package:projectone/home/profile/profile_page.dart';
 import 'package:projectone/home/proker/proker_page.dart';
-import 'package:projectone/login_register/login_page.dart';
 
 class HomePage extends StatefulWidget {
-  final User userData;
-
-  const HomePage({Key? key, required this.userData}) : super(key: key);
-
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  bool _isSearching = false;
-  final TextEditingController _searchController = TextEditingController();
-
-  List<String> _appBarTitles = [
-    'Dashboard',
-    'Program Kerja',
-    'Pengajuan Kegiatan',
-    'History Pendanaan',
-    'Lembar Pertanggung Jawaban',
-    'Profile'
-  ];
   
   List<String> _menuTitles = [
     'Dashboard',
@@ -66,73 +50,8 @@ class _HomePageState extends State<HomePage> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-    _selectedIcons = List<IconData>.from(_originalIcons);
-    _selectedIcons[0] = _icons[0];
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      title: Text(_appBarTitles[_selectedIndex]),
-      titleTextStyle: TextStyle(
-          color: Colors.black, fontSize: 21, fontWeight: FontWeight.bold),
-      iconTheme: IconThemeData(color: Color(0xFF5F7C5D)),
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.search),
-          onPressed: () {
-            setState(() {
-              _isSearching = true;
-            });
-          },
-        ),
-        Divider(
-          color: Colors.grey,
-          thickness: 1.5,
-          height: 30,
-        )
-      ],
-    );
-  }
-
-  AppBar _buildSearchBar() {
-    return AppBar(
-      backgroundColor: Color(0xFF5F7C5D),
-      iconTheme: IconThemeData(color: Colors.white),
-      title: TextField(
-        controller: _searchController,
-        decoration: InputDecoration(
-          hintText: 'Search...',
-          hintStyle: TextStyle(
-              color: Colors.white, fontSize: 21, fontFamily: 'Montserrat'),
-        ),
-        style: TextStyle(
-            color: Colors.white, fontSize: 18, fontFamily: 'Montserrat'),
-      ),
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back),
-        onPressed: () {
-          setState(() {
-            _isSearching = false;
-            _searchController.clear();
-          });
-        },
-      ),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _isSearching ? _buildSearchBar() : _buildAppBar(),
       body: IndexedStack(
         index: _selectedIndex,
         children: [

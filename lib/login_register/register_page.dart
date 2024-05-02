@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:projectone/login_register/login_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -10,19 +11,18 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   bool _isPasswordObscured = true;
   bool _isConfirmPasswordObscured = true;
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _emailUKMController = TextEditingController();
   TextEditingController _namaUKMController = TextEditingController();
+  TextEditingController _emailUKMController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
-  TextEditingController _bantuanPassController = TextEditingController();
+  TextEditingController _namaKetuaController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        padding: EdgeInsets.only(top: 100, bottom: 100),
+        padding: EdgeInsets.only(top: 150, bottom: 150),
         child: Center(
           child: Form(
             key: _formKey,
@@ -51,10 +51,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 40),
                   child: TextFormField(
-                    controller: _usernameController,
+                    controller: _namaUKMController,
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.person, color: Colors.grey),
-                      labelText: "Username",
+                      prefixIcon: Icon(Icons.home, color: Colors.grey),
+                      labelText: "Nama UKM",
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -71,7 +71,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.email, color: Colors.grey),
-                      labelText: "Email",
+                      labelText: "Email UKM",
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -81,22 +81,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                       if (!emailRegex.hasMatch(value)) {
                         return 'Masukkan alamat email yang valid';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 40),
-                  child: TextFormField(
-                    controller: _namaUKMController,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.home_filled, color: Colors.grey),
-                      labelText: "Nama UKM",
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nama UKM harus diisi';
                       }
                       return null;
                     },
@@ -169,14 +153,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 40),
                   child: TextFormField(
-                    controller: _bantuanPassController,
+                    controller: _namaKetuaController,
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.help, color: Colors.grey),
-                      labelText: "Bantuan Lupa Password",
+                      prefixIcon: Icon(Icons.person, color: Colors.grey),
+                      labelText: "Nama Ketua UKM",
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Bantuan Lupa Password harus diisi';
+                        return 'Nama Ketua UKM harus diisi';
                       }
                       return null;
                     },
@@ -191,16 +175,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _saveRegistrationData();
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                          (Route<dynamic> route) => false,
-                        );
                       }
                     },
                     style: ElevatedButton.styleFrom(
                       elevation: 10,
-                      primary: Color(0xFF5F7C5D),
+                      backgroundColor: Color(0xFF5F7C5D),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
                       ),
@@ -208,11 +187,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: Text(
                       "Daftar",
                       style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Montserrat'
-                      ),
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Montserrat'),
                     ),
                   ),
                 ),
@@ -252,11 +230,60 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _saveRegistrationData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', _usernameController.text);
-    prefs.setString('emailUKM', _emailUKMController.text);
-    prefs.setString('namaUKM', _namaUKMController.text);
-    prefs.setString('password', _passwordController.text);
-    prefs.setString('bantuan', _bantuanPassController.text);
+    try {
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:8000/api/register'),
+        body: {
+          'name': _namaUKMController.text,
+          'email': _emailUKMController.text,
+          'password': _passwordController.text,
+          'ketua': _namaKetuaController.text,
+        },
+      );
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 20),
+                Text('Tunggu Sebentar...'),
+              ],
+            ),
+          );
+        },
+      );
+
+      await Future.delayed(Duration(seconds: 2));
+
+      if (response.statusCode == 200) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Registrasi Berhasil'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+          (Route<dynamic> route) => false,
+        );
+      } else {
+        Navigator.pop(context);
+        
+        final responseBody = json.decode(response.body);
+        String errorMessage = responseBody['message'] ??
+            "Terjadi kesalahan saat melakukan registrasi.";
+        print(errorMessage);
+      }
+    } catch (error) {
+      print("Terjadi kesalahan: $error");
+    }
   }
 }

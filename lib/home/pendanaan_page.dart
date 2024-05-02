@@ -9,7 +9,9 @@ class _DanaPageState extends State<DanaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F6FA),
+      appBar: AppBar(
+        title: Text('Pendanaan'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(

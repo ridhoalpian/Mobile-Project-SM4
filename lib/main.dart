@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => Splash(),
         '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
-        '/home': (context) => HomePage(userData: User(username: 'example')),
+        '/home': (context) => HomePage(),
       },
       debugShowCheckedModeBanner: false,
     );

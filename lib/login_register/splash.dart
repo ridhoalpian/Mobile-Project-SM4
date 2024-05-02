@@ -40,18 +40,27 @@ class _SplashState extends State<Splash> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Image.asset(
-              //   'assets/images/logo_bem_polije.png',
-              //   width: 200,
-              //   height: 200,
-              // ),
               SizedBox(height: 10), // Menambah jarak antara gambar dan teks
-              Text(
-                'BEM - Connect',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w900,
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'SIKMAS ',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'POLIJE',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

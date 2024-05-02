@@ -16,7 +16,7 @@ class inputProker extends StatelessWidget {
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 10), // Berikan jarak antara TextField
+              SizedBox(height: 10),
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Penanggung Jawab',

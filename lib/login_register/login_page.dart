@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:projectone/Models/UserData.dart';
+import 'dart:convert';
 import 'package:projectone/home/home_page.dart';
+import 'package:projectone/database/DBHelper';
 import 'package:projectone/login_register/lupapassword_page.dart';
 import 'package:projectone/login_register/register_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key});
@@ -11,22 +14,23 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class User {
-  final String username; //class
-  User({required this.username});
-}
-
 class _LoginPageState extends State<LoginPage> {
   bool _isObscured = true;
-  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _emailUKMController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>(); // Key untuk form
+  final _formKey = GlobalKey<FormState>();
+  String emailUKM = '';
+  String namaUKM = '';
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(
-        // Wrap seluruh form dengan Form widget
         key: _formKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -53,10 +57,11 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               padding: EdgeInsets.fromLTRB(40, 20, 40, 5),
               child: TextFormField(
-                controller: _usernameController,
+                controller: _emailUKMController,
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.person, color: Colors.grey),
-                  labelText: "Username",
+                  prefixIcon: Icon(Icons.email, color: Colors.grey),
+                  labelText: "Email",
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -89,9 +94,6 @@ class _LoginPageState extends State<LoginPage> {
                   if (value == null || value.isEmpty) {
                     return 'Password harus diisi';
                   }
-                  // if (value.length < 8) {
-                  //   return 'Password harus memiliki setidaknya 8 karakter';
-                  // }
                   return null;
                 },
               ),
@@ -151,7 +153,10 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 Text(
                   "Belum punya akun?",
-                  style: TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w600),
                 ),
                 SizedBox(
                   height: 50,
@@ -182,39 +187,68 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      // Memanggil validate() untuk melakukan validasi
-      String username = _usernameController.text.trim();
+      String email = _emailUKMController.text.trim();
       String password = _passwordController.text.trim();
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? savedUsername = prefs.getString('username');
-      String? savedPassword = prefs.getString('password');
-
-      if (savedUsername == username && savedPassword == password) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(userData: User(username: username)),
-          ),
-        );
-      } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Email atau Password Salah"),
-              content: Text("Silakan coba lagi."),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("OK"),
-                ),
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 20),
+                Text('Tunggu Sebentar...'),
               ],
-            );
-          },
-        );
+            ),
+          );
+        },
+      );
+
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:8000/api/login'),
+        body: {
+          'email': email,
+          'password': password,
+        },
+      );
+
+      Navigator.pop(context);
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = json.decode(response.body);
+        if (responseData['data'] != null) {
+          final userData = UserData.fromJson(responseData['data']);
+          String email = userData.email ?? '';
+          String name = userData.name ?? '';
+          String ketua = userData.ketua ?? '';
+          String token = responseData['token'] ?? '';
+
+          await DBHelper.insertLoginData(name, email, ketua, token);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Selamat Datang $name!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Data user tidak ditemukan."),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
   }

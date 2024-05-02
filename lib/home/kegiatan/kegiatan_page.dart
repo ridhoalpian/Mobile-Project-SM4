@@ -19,84 +19,97 @@ class _KegiatanPageState extends State<KegiatanPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          width: double.infinity,
-          child: Row(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Kegiatan'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              // Action when search icon is pressed
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _currentPage = 0;
+                        _pageController.animateToPage(_currentPage,
+                            duration: Duration(milliseconds: 500),
+                            curve: Curves.ease);
+                      });
+                    },
+                    style: TextButton.styleFrom(
+                      primary: Color(0xFF5F7C5D),
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0)),
+                    ),
+                    child: Text('Pengajuan Kegiatan'),
+                  ),
+                ),
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _currentPage = 1;
+                        _pageController.animateToPage(_currentPage,
+                            duration: Duration(milliseconds: 500),
+                            curve: Curves.ease);
+                      });
+                    },
+                    style: TextButton.styleFrom(
+                      primary: Color(0xFF5F7C5D),
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0)),
+                    ),
+                    child: Text('Data Kegiatan'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Expanded(
-                child: TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _currentPage = 0;
-                      _pageController.animateToPage(_currentPage,
-                          duration: Duration(milliseconds: 500),
-                          curve: Curves.ease);
-                    });
-                  },
-                  style: TextButton.styleFrom(
-                    primary: Color(0xFF5F7C5D),
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0)),
-                  ),
-                  child: Text('Pengajuan Kegiatan'),
-                ),
+              Container(
+                width: MediaQuery.of(context).size.width / 2,
+                height: 5,
+                color: _currentPage == 0 ? Color(0xFF5F7C5D) : Colors.transparent,
               ),
-              Expanded(
-                child: TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _currentPage = 1;
-                      _pageController.animateToPage(_currentPage,
-                          duration: Duration(milliseconds: 500),
-                          curve: Curves.ease);
-                    });
-                  },
-                  style: TextButton.styleFrom(
-                    primary: Color(0xFF5F7C5D),
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0)),
-                  ),
-                  child: Text('Data Kegiatan'),
-                ),
+              Container(
+                width: MediaQuery.of(context).size.width / 2,
+                height: 5,
+                color: _currentPage == 1 ? Color(0xFF5F7C5D) : Colors.transparent,
               ),
             ],
           ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width / 2,
-              height: 5,
-              color: _currentPage == 0 ? Color(0xFF5F7C5D) : Colors.transparent,
+          Expanded(
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentPage = index;
+                });
+              },
+              children: [
+                pengajuanKegiatan(),
+                dataKegiatan(),
+              ],
             ),
-            Container(
-              width: MediaQuery.of(context).size.width / 2,
-              height: 5,
-              color: _currentPage == 1 ? Color(0xFF5F7C5D) : Colors.transparent,
-            ),
-          ],
-        ),
-        Expanded(
-          child: PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentPage = index;
-              });
-            },
-            children: [
-              pengajuanKegiatan(),
-              dataKegiatan(),
-            ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

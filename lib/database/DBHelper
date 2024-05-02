@@ -1,0 +1,67 @@
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+
+class DBHelper {
+  static Database? _database;
+  static const String _tableName = 'login_data';
+
+  static Future<Database> get database async {
+    if (_database != null) {
+      return _database!;
+    }
+
+    _database = await initDatabase();
+    return _database!;
+  }
+
+  static Future<Database> initDatabase() async {
+    final path = await getDatabasesPath();
+    final databasePath = join(path, 'login.db');
+
+    return openDatabase(
+      databasePath,
+      version: 1,
+      onCreate: (db, version) async {
+        await db.execute('''
+          CREATE TABLE $_tableName(
+            id INTEGER PRIMARY KEY,
+            name TEXT,
+            email TEXT,
+            ketua TEXT,
+            token TEXT
+          )
+        ''');
+      },
+    );
+  }
+
+  static Future<void> insertLoginData(String name, String email, String ketua, String token) async {
+    final db = await database;
+    await db.insert(
+      _tableName,
+      {'name': name, 'email': email, 'ketua': ketua, 'token': token},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  static Future<Map<String, dynamic>> getProfileData() async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.query(_tableName);
+    if (result.isNotEmpty) {
+      return {
+        'name': result.first['name'],
+        'email': result.first['email'],
+      };
+    } else {
+      return {
+        'name': '',
+        'email': '',
+      };
+    }
+  }
+
+  static Future<void> deleteLoginData() async {
+    final db = await database;
+    await db.delete(_tableName);
+  }
+}

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:projectone/database/DBHelper';
+import 'package:projectone/home/profile/edit_profile.dart';
+import 'package:projectone/home/profile/ganti_password.dart';
 import 'package:projectone/login_register/login_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -8,29 +10,30 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String username = '';
   String emailUKM = '';
   String namaUKM = '';
 
   @override
   void initState() {
     super.initState();
-    _loadRegistrationData();
+    _loadProfileData();
   }
 
-  Future<void> _loadRegistrationData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<void> _loadProfileData() async {
+    Map<String, dynamic> profileData = await DBHelper.getProfileData();
+
     setState(() {
-      username = prefs.getString('username') ?? '';
-      emailUKM = prefs.getString('emailUKM') ?? '';
-      namaUKM = prefs.getString('namaUKM') ?? '';
+      namaUKM = profileData['name'] ?? '';
+      emailUKM = profileData['email'] ?? '';
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F6FA),
+      appBar: AppBar(
+        title: Text('Profile'),
+      ),
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(20.0),
@@ -40,21 +43,21 @@ class _ProfilePageState extends State<ProfilePage> {
               Stack(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(
-                        0), // Atur jarak garis pinggir dari lingkaran
+                    padding: EdgeInsets.all(0),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.white, // Warna latar belakang circle avatar
+                      color: Colors.grey.withOpacity(
+                          0.2),
                       border: Border.all(
-                        color: Colors.white, // Warna garis pinggir
-                        width: 5,
-                        // Ketebalan garis pinggir
+                        color:
+                            Colors.grey.withOpacity(0.2),
+                        width: 2,
                       ),
                     ),
                     child: CircleAvatar(
                       radius: 80,
                       backgroundImage: NetworkImage(
-                          'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Prabowo_Subianto%2C_Candidate_for_Indonesia%27s_President_in_2024.jpg/1200px-Prabowo_Subianto%2C_Candidate_for_Indonesia%27s_President_in_2024.jpg'),
+                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJoqKv2TQNEOQRh6CXSrMF5Jhp0mEp95LwPoDHo2bPdY-wsTkzz1ih_LPxcbkH82WUBBk&usqp=CAU'),
                     ),
                   ),
                   Positioned(
@@ -64,14 +67,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: Colors.white, // Warna garis pinggir
-                          width: 3, // Ketebalan garis pinggir
+                          color: Colors.grey
+                              .withOpacity(0.2),
+                          width: 2,
                         ),
                         color: Color(0xFF5F7C5D),
                       ),
                       child: IconButton(
                         onPressed: () {
-                          // Action when edit icon is pressed
                         },
                         icon: Icon(
                           Icons.edit,
@@ -89,31 +92,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 10),
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(
-                      255, 192, 252, 179), // Warna latar belakang
-                  borderRadius:
-                      BorderRadius.circular(10), // Sudut yang membulat
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(2.0),
-                  child: Text(
-                    username,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87, // Warna teks
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-              SizedBox(height: 5), // Berikan jarak antara dua teks
               Text(
                 emailUKM,
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.black87, // Warna teks
+                  color: Colors.black87,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -123,15 +106,20 @@ class _ProfilePageState extends State<ProfilePage> {
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () {
-                    // Action when button is pressed
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => editProfile()),
+                    );
                   },
                   style: TextButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(15), // Optional: add border
+                      borderRadius: BorderRadius.circular(15),
+                      side: BorderSide(
+                          color: Colors.grey
+                              .withOpacity(0.5)),
                     ),
-                    elevation: 40, // Elevasi
+                    elevation: 10,
                     shadowColor: Colors.grey.withOpacity(0.2),
                   ),
                   child: Row(
@@ -139,7 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       SizedBox(width: 10),
                       Icon(Icons.edit_outlined,
-                          color: Color(0xFF5F7C5D)), // Ikon sebagai prefix
+                          color: Color(0xFF5F7C5D)), 
                       SizedBox(width: 15),
                       Expanded(
                         child: Text(
@@ -153,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                       Icon(Icons.arrow_forward, color: Colors.grey),
-                      SizedBox(width: 10), // Ikon sebagai suffix
+                      SizedBox(width: 10),
                     ],
                   ),
                 ),
@@ -163,13 +151,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 height: 60,
                 width: double.infinity,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => gantiPassword()),
+                    );
+                  },
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
+                      side: BorderSide(color: Colors.grey.withOpacity(0.5)),
                     ),
-                    elevation: 40, // Elevasi
+                    elevation: 10, 
                     shadowColor: Colors.grey.withOpacity(0.2),
                   ),
                   child: Row(
@@ -177,7 +171,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       SizedBox(width: 10),
                       Icon(Icons.lock_outline, color: Color(0xFF5F7C5D)),
-                      SizedBox(width: 15), // Ikon sebagai prefix
+                      SizedBox(width: 15),
                       Expanded(
                         child: Text(
                           "Ganti Password",
@@ -190,7 +184,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                       Icon(Icons.arrow_forward, color: Colors.grey),
-                      SizedBox(width: 10), // Ikon sebagai suffix
+                      SizedBox(width: 10), 
                     ],
                   ),
                 ),
@@ -207,16 +201,17 @@ class _ProfilePageState extends State<ProfilePage> {
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
+                      side: BorderSide(color: Colors.grey.withOpacity(0.5)),
                     ),
-                    elevation: 40, // Elevasi
-                    shadowColor: Colors.grey.withOpacity(0.2), // Warna shadow
+                    elevation: 10,
+                    shadowColor: Colors.grey.withOpacity(0.2), 
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(width: 10),
                       Icon(Icons.logout_outlined, color: Color(0xFF5F7C5D)),
-                      SizedBox(width: 15), // Ikon sebagai prefix
+                      SizedBox(width: 15),
                       Expanded(
                         child: Text(
                           "Logout",
@@ -229,7 +224,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                       Icon(Icons.arrow_forward, color: Colors.grey),
-                      SizedBox(width: 10), // Ikon sebagai suffix
+                      SizedBox(width: 10),
                     ],
                   ),
                 ),
@@ -241,33 +236,39 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void _showLogoutConfirmationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Konfirmasi"),
-          content: Text("Yakin ingin keluar?"),
-          actions: <Widget>[
-            TextButton(
-              child: Text("Tidak"),
-              onPressed: () {
-                Navigator.of(context).pop(); // Tutup dialog
-              },
-            ),
-            TextButton(
-              child: Text("Ya"),
-              onPressed: () {
-                Navigator.of(context).pop(); // Tutup dialog
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+ void _showLogoutConfirmationDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Konfirmasi"),
+        content: Text("Yakin ingin keluar?"),
+        actions: <Widget>[
+          TextButton(
+            child: Text("Tidak"),
+            onPressed: () {
+              Navigator.of(context).pop(); // Tutup dialog
+            },
+          ),
+          TextButton(
+            child: Text("Ya"),
+            onPressed: () async {
+              // Hapus data dari database SQFlite
+              await DBHelper.deleteLoginData();
+
+              // Tutup dialog
+              Navigator.of(context).pop();
+
+              // Arahkan pengguna kembali ke halaman login
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+              );
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 }
