@@ -271,12 +271,15 @@ class _RegisterPageState extends State<RegisterPage> {
 
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
+          MaterialPageRoute(
+            builder: (context) =>
+                LoginPage(registeredEmail: _emailUKMController.text),
+          ),
           (Route<dynamic> route) => false,
         );
       } else {
         Navigator.pop(context);
-        
+
         final responseBody = json.decode(response.body);
         String errorMessage = responseBody['message'] ??
             "Terjadi kesalahan saat melakukan registrasi.";

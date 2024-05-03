@@ -1,48 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:projectone/database/DBHelper';
+import 'package:projectone/home/profile/profile_page.dart';
 
-class editProfile extends StatefulWidget {
-  @override
-  _editProfileState createState() => _editProfileState();
-}
-
-class _editProfileState extends State<editProfile> {
-  String emailUKM = '';
-  String namaUKM = '';
-  String namaKetua = '';
-
-  // Controllers for TextFields
-  TextEditingController _namaUKMController = TextEditingController();
-  TextEditingController _emailUKMController = TextEditingController();
-  TextEditingController _namaKetuaController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _loadProfileData();
-  }
-
-  Future<void> _loadProfileData() async {
-    Map<String, dynamic> profileData = await DBHelper.getProfileData();
-
-    setState(() {
-      namaUKM = profileData['name'] ?? '';
-      emailUKM = profileData['email'] ?? '';
-      namaKetua = profileData['ketua'] ?? '';
-
-      // Set text for TextFields using controllers
-      _namaUKMController.text = namaUKM;
-      _emailUKMController.text = emailUKM;
-      _namaKetuaController.text = namaKetua;
-    });
-  }
-
+class passwordBaru extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Edit Profile',
+          'Password Baru',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         leading: IconButton(
@@ -58,10 +23,12 @@ class _editProfileState extends State<editProfile> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
-              controller: _namaUKMController, // Use controller for this TextField
               decoration: InputDecoration(
-                labelText: 'Nama UKM',
-                prefixIcon: Icon(Icons.home, color: Colors.grey),
+                labelText: 'Password Baru',
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Colors.grey,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
@@ -69,21 +36,12 @@ class _editProfileState extends State<editProfile> {
             ),
             SizedBox(height: 20),
             TextField(
-              controller: _emailUKMController, // Use controller for this TextField
               decoration: InputDecoration(
-                labelText: 'Email UKM',
-                prefixIcon: Icon(Icons.email, color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
+                labelText: 'Konfirmasi Password Baru',
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Colors.grey,
                 ),
-              ),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _namaKetuaController, // Use controller for this TextField
-              decoration: InputDecoration(
-                labelText: 'Nama Ketua',
-                prefixIcon: Icon(Icons.person, color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
@@ -94,7 +52,15 @@ class _editProfileState extends State<editProfile> {
               height: 60,
               width: double.infinity,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(),
+                    ),
+                    (Route<dynamic> route) => false,
+                  );
+                },
                 style: TextButton.styleFrom(
                   backgroundColor: const Color(0xFF5F7C5D),
                   shape: RoundedRectangleBorder(

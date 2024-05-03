@@ -8,7 +8,9 @@ import 'package:projectone/login_register/lupapassword_page.dart';
 import 'package:projectone/login_register/register_page.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key});
+  final String? registeredEmail;
+
+  const LoginPage({Key? key, this.registeredEmail}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -25,6 +27,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    if (widget.registeredEmail != null) {
+      _emailUKMController.text = widget.registeredEmail!;
+    }
   }
 
   @override

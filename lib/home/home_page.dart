@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projectone/home/kegiatan/kegiatan_page.dart';
 import 'package:projectone/home/lpj/lpj_page.dart';
-import 'package:projectone/home/pendanaan_page.dart';
+import 'package:projectone/home/pendanaan/pendanaan_page.dart';
 import 'package:projectone/home/profile/profile_page.dart';
 import 'package:projectone/home/proker/proker_page.dart';
 

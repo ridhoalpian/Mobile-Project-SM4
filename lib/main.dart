@@ -5,6 +5,7 @@ import 'package:projectone/home/home_page.dart';
 import 'package:projectone/login_register/splash.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

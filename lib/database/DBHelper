@@ -51,11 +51,13 @@ class DBHelper {
       return {
         'name': result.first['name'],
         'email': result.first['email'],
+        'ketua': result.first['ketua'],
       };
     } else {
       return {
         'name': '',
         'email': '',
+        'ketua': '',
       };
     }
   }
