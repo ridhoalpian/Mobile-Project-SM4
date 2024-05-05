@@ -41,7 +41,7 @@ class LupaPassword extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(40, 0, 40, 5),
             child: TextField(
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.email, color: Colors.grey), 
+                prefixIcon: Icon(Icons.email, color: Colors.grey),
                 labelText: "Email",
               ),
             ),

@@ -49,8 +49,7 @@ class _LpjPageState extends State<LpjPage> {
                       });
                     },
                     style: TextButton.styleFrom(
-                      primary: Color(0xFF5F7C5D),
-                      backgroundColor: Colors.white,
+                      foregroundColor: Color(0xFF5F7C5D), backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(0)),
                     ),
@@ -68,8 +67,7 @@ class _LpjPageState extends State<LpjPage> {
                       });
                     },
                     style: TextButton.styleFrom(
-                      primary: Color(0xFF5F7C5D),
-                      backgroundColor: Colors.white,
+                      foregroundColor: Color(0xFF5F7C5D), backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(0)),
                     ),

@@ -47,8 +47,7 @@ class _ProkerPageState extends State<ProkerPage> {
                       });
                     },
                     style: TextButton.styleFrom(
-                      primary: Color(0xFF5F7C5D),
-                      backgroundColor: Colors.white,
+                      foregroundColor: Color(0xFF5F7C5D), backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
                     ),
                     child: Text('Input Proker'),
@@ -63,8 +62,7 @@ class _ProkerPageState extends State<ProkerPage> {
                       });
                     },
                     style: TextButton.styleFrom(
-                      primary: Color(0xFF5F7C5D),
-                      backgroundColor: Colors.white,
+                      foregroundColor: Color(0xFF5F7C5D), backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
                     ),
                     child: Text('Data Proker'),
