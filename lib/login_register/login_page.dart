@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:projectone/Models/UserData.dart';
 import 'dart:convert';
 import 'package:projectone/home/home_page.dart';
 import 'package:projectone/database/DBHelper';
 import 'package:projectone/login_register/lupapassword_page.dart';
 import 'package:projectone/login_register/register_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   final String? registeredEmail;
@@ -190,71 +190,107 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<void> _login() async {
-    if (_formKey.currentState!.validate()) {
-      String email = _emailUKMController.text.trim();
-      String password = _passwordController.text.trim();
+  Future<void> fetchDataWithToken(String token) async {
+    // Tambahkan token ke dalam header permintaan
+    var headers = {'Authorization': 'Bearer $token'};
 
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 20),
-                Text('Tunggu Sebentar...'),
-              ],
-            ),
-          );
-        },
-      );
+    // Kirim permintaan ke API dengan menyertakan header yang berisi token
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:8000/api/user-data'),
+      headers: headers,
+    );
 
-      final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/login'),
-        body: {
-          'email': email,
-          'password': password,
-        },
-      );
-
-      Navigator.pop(context);
-
-      if (response.statusCode == 200) {
-        Map<String, dynamic> responseData = json.decode(response.body);
-        if (responseData['data'] != null) {
-          final userData = UserData.fromJson(responseData['data']);
-          String email = userData.email ?? '';
-          String name = userData.name ?? '';
-          String ketua = userData.ketua ?? '';
-          String token = responseData['token'] ?? '';
-
-          await DBHelper.insertLoginData(name, email, ketua, token);
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Selamat Datang $name!'),
-              backgroundColor: Colors.green,
-            ),
-          );
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HomePage(),
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Data user tidak ditemukan."),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
+    if (response.statusCode == 200) {
+      // Tangani respons dari API
+      Map<String, dynamic> responseData = json.decode(response.body);
+      // Simpan data pengguna pada DBHelper
+      await DBHelper.insertUserData(responseData);
+    } else {
+      
+      throw Exception('Failed to fetch data');
     }
   }
+
+  Future<void> saveTokenToSharedPreferences(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+  }
+
+  Future<void> _login() async {
+  if (_formKey.currentState!.validate()) {
+    String email = _emailUKMController.text.trim();
+    String password = _passwordController.text.trim();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 20),
+              Text('Tunggu Sebentar...'),
+            ],
+          ),
+        );
+      },
+    );
+
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:8000/api/login'),
+      body: {
+        'email': email,
+        'password': password,
+      },
+    );
+
+    Navigator.pop(context);
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> responseData = json.decode(response.body);
+      if (responseData['token'] != null) {
+        // Simpan token ke SharedPreferences
+        String token = responseData['token'];
+        await saveTokenToSharedPreferences(token);
+
+        // Ambil data pengguna dari API
+        await fetchDataWithToken(token);
+
+        // Ambil nama UKM dari DBHelper
+        Map<String, dynamic> userData = await DBHelper.getProfileData();
+        String namaUKM = userData['name'];
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Login berhasil! Selamat Datang $namaUKM'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Email atau password salah."),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Gagal melakukan login."),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+}
 }
