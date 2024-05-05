@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:projectone/login_register/verifikasi_email.dart';
+import 'package:projectone/login_register/login_page.dart';
 
-class LupaPassword extends StatelessWidget {
+class passBaru extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Lupa Password',
+          'Buat Password Baru',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.arrow_back),
+        //   onPressed: () {
+        //     Navigator.of(context).pop();
+        //   },
+        // ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20.0),
@@ -24,7 +24,17 @@ class LupaPassword extends StatelessWidget {
           children: <Widget>[
             TextField(
               decoration: InputDecoration(
-                labelText: 'Email UKM',
+                labelText: 'Password Baru',
+                prefixIcon: Icon(Icons.email, color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Konfirmasi Password',
                 prefixIcon: Icon(Icons.email, color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
@@ -39,7 +49,7 @@ class LupaPassword extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => verif_email()),
+                    MaterialPageRoute(builder: (context) => LoginPage()),
                   );
                 },
                 style: TextButton.styleFrom(
@@ -52,7 +62,7 @@ class LupaPassword extends StatelessWidget {
                   shadowColor: Colors.grey.withOpacity(0.2),
                 ),
                 child: Text(
-                  "Kirim",
+                  "Simpan",
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.white,

@@ -35,11 +35,15 @@ class DBHelper {
     );
   }
 
-  static Future<void> insertLoginData(String name, String email, String ketua, String token) async {
+  static Future<void> insertUserData(Map<String, dynamic> userData) async {
     final db = await database;
     await db.insert(
       _tableName,
-      {'name': name, 'email': email, 'ketua': ketua, 'token': token},
+      {
+        'name': userData['name'],
+        'email': userData['email'],
+        'ketua': userData['ketua'],
+      },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -65,5 +69,24 @@ class DBHelper {
   static Future<void> deleteLoginData() async {
     final db = await database;
     await db.delete(_tableName);
+  }
+
+  static Future<void> insertToken(String token) async {
+  final db = await database;
+  await db.insert(
+    _tableName,
+    {'token': token},
+    conflictAlgorithm: ConflictAlgorithm.replace,
+  );
+  }
+
+  static Future<String?> getToken() async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.query(_tableName);
+    if (result.isNotEmpty) {
+      return result.first['token'] as String?;
+    } else {
+      return null;
+    }
   }
 }
