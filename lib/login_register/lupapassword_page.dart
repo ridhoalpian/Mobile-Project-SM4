@@ -1,15 +1,18 @@
+import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
 import 'package:projectone/login_register/verifikasi_email.dart';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 
 class LupaPassword extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final EmailOTP myauth = EmailOTP();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Lupa Password',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: Text('Lupa Password',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -18,11 +21,29 @@ class LupaPassword extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.0),
+        padding: EdgeInsets.symmetric(horizontal: 30),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            SizedBox(height: 40),
+            Image.asset(
+              'assets/images/lupapassword.png',
+              height: 150,
+              width: 150,
+            ),
+            SizedBox(height: 40),
+            Text(
+              'Masukkan email yang digunakan pada saat pertama kali mendaftar',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+            SizedBox(height: 30),
             TextField(
+              controller: emailController,
               decoration: InputDecoration(
                 labelText: 'Email UKM',
                 prefixIcon: Icon(Icons.email, color: Colors.grey),
@@ -31,37 +52,66 @@ class LupaPassword extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 30),
-            Container(
-              height: 60,
-              width: double.infinity,
-              child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => verif_email()),
-                  );
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: const Color(0xFF5F7C5D),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(35),
-                    side: BorderSide(color: Colors.grey.withOpacity(0.5)),
-                  ),
-                  elevation: 10,
-                  shadowColor: Colors.grey.withOpacity(0.2),
+            SizedBox(height: 60),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        margin: EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              onPressed: () async {
+                myauth.setConfig(
+                    appEmail: "contact@hdevcoder.com",
+                    appName: "Email OTP",
+                    userEmail: emailController.text,
+                    otpLength: 4,
+                    otpType: OTPType.digitsOnly);
+                if (await myauth.sendOTP() == true) {
+                  AnimatedSnackBar.rectangle(
+                    'Success',
+                    'OTP berhasil dikirim',
+                    type: AnimatedSnackBarType.success,
+                    brightness: Brightness.light,
+                  ).show(context);
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => VerifOtpPage(
+                                myauth: myauth,
+                                email: emailController.text,
+                              )));
+                } else {
+                  AnimatedSnackBar.rectangle(
+                    'Error',
+                    'OTP gagal dikirim',
+                    type: AnimatedSnackBarType.error,
+                    brightness: Brightness.light,
+                  ).show(context);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                primary: const Color(0xFF5F7C5D),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(35),
+                  side: BorderSide(color: Colors.grey.withOpacity(0.5)),
                 ),
-                child: Text(
-                  "Kirim",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.bold,
-                  ),
+                elevation: 10,
+                minimumSize: Size(double.infinity, 50),
+              ),
+              child: Text(
+                'Kirim',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
+            SizedBox(height: 20),
           ],
         ),
       ),

@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:projectone/database/DBHelper';
+import 'package:projectone/Models/UserData.dart';
+import 'package:projectone/database/DBHelper.dart';
+import 'package:projectone/database/apiutils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class editProfile extends StatefulWidget {
   @override
@@ -20,21 +25,6 @@ class _editProfileState extends State<editProfile> {
   void initState() {
     super.initState();
     _loadProfileData();
-  }
-
-  Future<void> _loadProfileData() async {
-    Map<String, dynamic> profileData = await DBHelper.getProfileData();
-
-    setState(() {
-      namaUKM = profileData['name'] ?? '';
-      emailUKM = profileData['email'] ?? '';
-      namaKetua = profileData['ketua'] ?? '';
-
-      // Set text for TextFields using controllers
-      _namaUKMController.text = namaUKM;
-      _emailUKMController.text = emailUKM;
-      _namaKetuaController.text = namaKetua;
-    });
   }
 
   @override
@@ -58,7 +48,8 @@ class _editProfileState extends State<editProfile> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
-              controller: _namaUKMController, // Use controller for this TextField
+              controller:
+                  _namaUKMController, // Use controller for this TextField
               decoration: InputDecoration(
                 labelText: 'Nama UKM',
                 prefixIcon: Icon(Icons.home, color: Colors.grey),
@@ -69,7 +60,8 @@ class _editProfileState extends State<editProfile> {
             ),
             SizedBox(height: 20),
             TextField(
-              controller: _emailUKMController, // Use controller for this TextField
+              controller:
+                  _emailUKMController, // Use controller for this TextField
               decoration: InputDecoration(
                 labelText: 'Email UKM',
                 prefixIcon: Icon(Icons.email, color: Colors.grey),
@@ -80,7 +72,8 @@ class _editProfileState extends State<editProfile> {
             ),
             SizedBox(height: 20),
             TextField(
-              controller: _namaKetuaController, // Use controller for this TextField
+              controller:
+                  _namaKetuaController, // Use controller for this TextField
               decoration: InputDecoration(
                 labelText: 'Nama Ketua',
                 prefixIcon: Icon(Icons.person, color: Colors.grey),
@@ -94,7 +87,9 @@ class _editProfileState extends State<editProfile> {
               height: 60,
               width: double.infinity,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  updateProfile();
+                },
                 style: TextButton.styleFrom(
                   backgroundColor: const Color(0xFF5F7C5D),
                   shape: RoundedRectangleBorder(
@@ -119,5 +114,81 @@ class _editProfileState extends State<editProfile> {
         ),
       ),
     );
+  }
+
+  Future<String?> _getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
+
+  Future<void> _loadProfileData() async {
+    List<Map<String, dynamic>> profileDataList = await DBHelper.getUKMData();
+
+    if (profileDataList.isNotEmpty) {
+      Map<String, dynamic> profileDataMap = profileDataList.first;
+      UserData profileData = UserData.fromJson(profileDataMap);
+
+      setState(() {
+        namaUKM = profileData.name;
+        emailUKM = profileData.email;
+        namaKetua = profileData.ketua;
+
+        _namaUKMController.text = namaUKM;
+        _emailUKMController.text = emailUKM;
+        _namaKetuaController.text = namaKetua;
+      });
+    } else {
+      // Handle case when no profile data is found
+    }
+  }
+
+  Future<void> updateProfile() async {
+    String apiUrl = ApiUtils.buildUrl('update-user');
+    String? token = await _getToken();
+
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    Map<String, String> body = {
+      'name': _namaUKMController.text,
+      'email': _emailUKMController.text,
+      'ketua': _namaKetuaController.text,
+    };
+
+    try {
+      var response = await http.post(Uri.parse(apiUrl),
+          headers: headers, body: jsonEncode(body));
+
+      if (response.statusCode == 200) {
+        print('User data updated successfully');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Data profile berhasil diubah'),
+          ),
+        );
+        Navigator.of(context).pop(); // Kembali ke layar sebelumnya
+
+        // Simpan perubahan data ke dalam database sqflite
+        await _saveChangesToLocalDatabase();
+      } else {
+        print('Failed to update user data: ${response.statusCode}');
+        // Tambahkan penanganan kesalahan jika diperlukan
+      }
+    } catch (error) {
+      print('Error: $error');
+      // Tambahkan penanganan kesalahan jika diperlukan
+    }
+  }
+
+  Future<void> _saveChangesToLocalDatabase() async {
+    Map<String, dynamic> newData = {
+      'email': _emailUKMController.text,
+      'name': _namaUKMController.text,
+      'ketua': _namaKetuaController.text,
+    };
+
+    await DBHelper.editUserData(newData);
   }
 }

@@ -20,17 +20,6 @@ class _KegiatanPageState extends State<KegiatanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Kegiatan'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // Action when search icon is pressed
-            },
-          ),
-        ],
-      ),
       body: Column(
         children: [
           SizedBox(

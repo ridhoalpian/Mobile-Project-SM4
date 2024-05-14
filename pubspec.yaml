@@ -41,6 +41,9 @@ dependencies:
   json_annotation: ^4.8.1
   build_runner: ^2.4.9
   sqflite: ^2.3.2
+  email_otp: ^2.0.1
+  animated_snack_bar: ^0.2.0
+  flutter_spinkit: ^5.1.0
 
 
 dev_dependencies:
@@ -70,6 +73,9 @@ flutter:
   - assets/images/logo_bem_polije.jpg
   - assets/images/logo_bem_polije.png
   - assets/images/bg_login_regis.jpg
+  - assets/images/email.png
+  - assets/images/lupapassword.png
+  - assets/images/passbaru.png
 
   fonts:
     - family: Montserrat

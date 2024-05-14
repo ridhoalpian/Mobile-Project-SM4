@@ -20,17 +20,6 @@ class _LpjPageState extends State<LpjPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Laporan Pertanggungjawaban'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // Action when search icon is pressed
-            },
-          ),
-        ],
-      ),
       body: Column(
         children: [
           SizedBox(

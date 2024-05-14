@@ -1,0 +1,65 @@
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+
+class DBHelper {
+  static Database? _database;
+  static const String _tableName = 'ukm_data';
+
+  static Future<Database> get database async {
+    if (_database != null) {
+      return _database!;
+    }
+
+    _database = await initDatabase();
+    return _database!;
+  }
+
+  static Future<Database> initDatabase() async {
+    final path = await getDatabasesPath();
+    final databasePath = join(path, 'ukm_data.db');
+
+    return openDatabase(
+      databasePath,
+      version: 1,
+      onCreate: (db, version) async {
+        await db.execute('''
+        CREATE TABLE $_tableName(
+          id INTEGER PRIMARY KEY,
+          name TEXT,
+          email TEXT,
+          ketua TEXT
+        )
+      ''');
+      },
+    );
+  }
+
+  static Future<void> insertUKMData(Map<String, dynamic> data) async {
+    final db = await database;
+    await db.insert(
+      _tableName,
+      data,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> getUKMData() async {
+    final db = await database;
+    return db.query(_tableName);
+  }
+
+  static Future<void> deleteUKMData() async {
+    final db = await database;
+    await db.delete(_tableName);
+  }
+
+  static Future<void> editUserData(Map<String, dynamic> newData) async {
+    final db = await database;
+    await db.update(
+      _tableName,
+      newData,
+      where: 'email = ?', // Menggunakan email sebagai kriteria
+      whereArgs: [newData['email']], // Menggunakan nilai email dari newData
+    );
+  }
+}

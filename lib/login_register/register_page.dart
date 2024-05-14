@@ -1,4 +1,6 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:projectone/login_register/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -246,12 +248,23 @@ class _RegisterPageState extends State<RegisterPage> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(),
+                SpinKitFadingCircle(
+                  color: Colors.white,
+                  size: 50.0,
+                ),
                 SizedBox(height: 20),
-                Text('Tunggu Sebentar...'),
+                Text(
+                  'Tunggu Sebentar...',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
               ],
             ),
           );
@@ -261,13 +274,13 @@ class _RegisterPageState extends State<RegisterPage> {
       await Future.delayed(Duration(seconds: 2));
 
       if (response.statusCode == 200) {
+        AnimatedSnackBar.rectangle(
+          'Success',
+          'Registrasi Berhasil',
+          type: AnimatedSnackBarType.success,
+          brightness: Brightness.light,
+        ).show(context);
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Registrasi Berhasil'),
-            backgroundColor: Colors.green,
-          ),
-        );
 
         Navigator.pushAndRemoveUntil(
           context,

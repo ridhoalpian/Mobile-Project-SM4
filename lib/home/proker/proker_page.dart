@@ -20,17 +20,6 @@ class _ProkerPageState extends State<ProkerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Program Kerja'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // Action when search icon is pressed
-            },
-          ),
-        ],
-      ),
       body: Column(
         children: [
           SizedBox(
@@ -95,7 +84,7 @@ class _ProkerPageState extends State<ProkerPage> {
                 });
               },
               children: [
-                inputProker(),
+                InputProker(),
                 dataProker(),
               ],
             ),
