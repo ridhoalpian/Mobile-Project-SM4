@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
 class pengajuanLpj extends StatefulWidget {
@@ -6,7 +7,25 @@ class pengajuanLpj extends StatefulWidget {
 }
 
 class _pengajuanLpjState extends State<pengajuanLpj> {
-  String? dropdownValue;
+  final List<String> genderItems = [
+    'Proker 1',
+    'Proker 2',
+    'Proker 3',
+    'Proker 4',
+  ];
+
+  String? selectedValue;
+
+  OutlineInputBorder _outlineInputBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(15),
+    borderSide: BorderSide(color: Colors.grey), // Warna border default
+  );
+
+  OutlineInputBorder _focusedBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(15),
+    borderSide: BorderSide(color: Colors.grey), // Warna border saat diklik
+  );
+
 
   @override
   Widget build(BuildContext context) {
@@ -17,60 +36,68 @@ class _pengajuanLpjState extends State<pengajuanLpj> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              child: DropdownButton<String>(
-                isExpanded: true,
-                value: dropdownValue,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    dropdownValue = newValue;
-                  });
-                },
-                hint: Text('Pilih Proker'),
-                items: const [
-                  DropdownMenuItem<String>(
-                    value: 'proker1',
-                    child: Text('Proker 1'),
-                  ),
-                  DropdownMenuItem<String>(
-                    value: 'proker2',
-                    child: Text('Proker 2'),
-                  ),
-                ],
+              child: DropdownButtonFormField2<String>(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.work),
+                border: _outlineInputBorder,
+                focusedBorder: _focusedBorder,
+                hintText: 'Pilih Proker'
+              ),
+              items: genderItems
+                  .map((item) => DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(
+                          item,
+                        ),
+                      ))
+                  .toList(),
+              validator: (value) {
+                if (value == null) {
+                  return 'Anda belum memilih Proker';
+                }
+                return null;
+              },
+              onChanged: (value) {
+                //Do something when selected item is changed.
+              },
+              onSaved: (value) {
+                selectedValue = value.toString();
+              },
+              iconStyleData: const IconStyleData(
+                icon: Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.black45,
+                ),
+                iconSize: 24,
+              ),
+              dropdownStyleData: DropdownStyleData(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                ),
               ),
             ),
+            ),
             SizedBox(height: 20),
-            TextField(
+            TextFormField(
               decoration: InputDecoration(
                 labelText: 'Lampiran LPJ',
-                labelStyle:
-                    TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(),
-                prefixIcon: Container(
-                  margin: EdgeInsets.only(
-                      right: 8),
-                  child: TextButton(
-                    onPressed: () {
-                      _openFilePicker(context);
-                    },
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.grey,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                    child: Text(
-                      "Choose File",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Montserrat',
-                      ),
+                border: _outlineInputBorder,
+                focusedBorder: _focusedBorder,
+                suffixIcon: InkWell(
+                  onTap: () {
+                    _openFilePicker(context);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(
+                      Icons.attach_file,
                     ),
                   ),
                 ),
-                contentPadding: EdgeInsets.fromLTRB(0, 0, 8, 0),
-                floatingLabelBehavior: FloatingLabelBehavior.never,
+                prefixIcon: Icon(
+                  Icons.description,
+                ),
+                labelStyle: TextStyle(),
               ),
               readOnly: true,
               onTap: () {
@@ -81,41 +108,66 @@ class _pengajuanLpjState extends State<pengajuanLpj> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextButton(
+                ElevatedButton(
                   onPressed: () {},
-                  style: TextButton.styleFrom(
-                    backgroundColor: Color(0xFFF34235),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white,
                     elevation: 5,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(15),
+                      side: BorderSide(color: Colors.green[400]!, width: 2),
                     ),
                   ),
-                  child: Text(
-                    "Hapus",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Montserrat'),
+                  child: Container(
+                    constraints: BoxConstraints(minWidth: 88, minHeight: 44),
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.delete, color: Colors.black54),
+                        SizedBox(width: 8),
+                        Text(
+                          "Hapus",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Montserrat',
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(width: 10),
-                TextButton(
+                ElevatedButton(
                   onPressed: () {},
-                  style: TextButton.styleFrom(
-                    backgroundColor: Color(0xFF3CA2BA),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.green[400],
                     elevation: 5,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                  child: Text(
-                    "Kirim",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Montserrat'),
+                  child: Container(
+                    constraints: BoxConstraints(minWidth: 88, minHeight: 44),
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.send, color: Colors.white),
+                        SizedBox(width: 8),
+                        Text(
+                          "Kirim",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Montserrat',
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

@@ -1,7 +1,98 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:projectone/home/profile/profile_page.dart';
+import 'package:projectone/Models/UserData.dart';
+import 'package:projectone/database/DBHelper.dart';
+import 'package:projectone/database/apiutils.dart';
+import 'package:http/http.dart' as http;
 
-class passwordBaru extends StatelessWidget {
+class passwordBaru extends StatefulWidget {
+  @override
+  _passwordBaruState createState() => _passwordBaruState();
+}
+
+class _passwordBaruState extends State<passwordBaru> {
+  bool _isPasswordObscured = true;
+  bool _isConfirmPasswordObscured = true;
+
+  String emailUKM = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileData();
+  }
+
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+
+  Future<void> _loadProfileData() async {
+    List<Map<String, dynamic>> profileDataList = await DBHelper.getUKMData();
+
+    if (profileDataList.isNotEmpty) {
+      Map<String, dynamic> profileDataMap = profileDataList.first;
+      UserData profileData = UserData.fromJson(profileDataMap);
+
+      setState(() {
+        emailUKM = profileData.email;
+      });
+    } else {}
+  }
+
+  Future<void> _changePassword() async {
+    String newPassword = newPasswordController.text;
+    String confirmPassword = confirmPasswordController.text;
+
+    // Periksa apakah password baru dan konfirmasi password cocok
+    if (newPassword != confirmPassword) {
+      AnimatedSnackBar.rectangle(
+        'Info',
+        'Password dan konfirmasi password tidak cocok',
+        type: AnimatedSnackBarType.info,
+        brightness: Brightness.light,
+      ).show(context);
+
+      return;
+    }
+
+    // Kirim permintaan ke API untuk mengubah password
+    try {
+      var response = await http.post(
+        Uri.parse(ApiUtils.buildUrl('change-password')),
+        body: {'email': emailUKM, 'password': newPassword},
+      );
+
+      // Periksa status kode respons
+      if (response.statusCode == 200) {
+        AnimatedSnackBar.rectangle(
+          'Success',
+          'Password berhasil diperbarui',
+          type: AnimatedSnackBarType.success,
+          brightness: Brightness.light,
+        ).show(context);
+
+        // Navigasi kembali ke halaman profil setelah password berhasil diperbarui
+        Navigator.of(context).pop();
+      } else {
+        AnimatedSnackBar.rectangle(
+          'Warning',
+          'Gagal memperbarui password',
+          type: AnimatedSnackBarType.warning,
+          brightness: Brightness.light,
+        ).show(context);
+      }
+    } catch (e) {
+      // Tangani kesalahan yang mungkin terjadi selama permintaan
+      print('Error: $e');
+      AnimatedSnackBar.rectangle(
+        'Info',
+        'Terjadi kesalahan, silakan coba lagi',
+        type: AnimatedSnackBarType.info,
+        brightness: Brightness.light,
+      ).show(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,30 +113,66 @@ class passwordBaru extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(
+            TextFormField(
+              controller: newPasswordController,
+              obscureText: _isPasswordObscured,
               decoration: InputDecoration(
                 labelText: 'Password Baru',
-                prefixIcon: Icon(
-                  Icons.lock,
-                  color: Colors.grey,
-                ),
+                prefixIcon: Icon(Icons.lock, color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
+                suffixIcon: IconButton(
+                  icon: _isPasswordObscured
+                      ? Icon(Icons.visibility_off)
+                      : Icon(Icons.visibility),
+                  onPressed: () {
+                    setState(() {
+                      _isPasswordObscured = !_isPasswordObscured;
+                    });
+                  },
+                ),
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Password harus diisi';
+                }
+                if (value.length < 8) {
+                  return 'Password harus memiliki setidaknya 8 karakter';
+                }
+                return null;
+              },
             ),
             SizedBox(height: 20),
-            TextField(
+            TextFormField(
+              controller: confirmPasswordController,
+              obscureText: _isConfirmPasswordObscured,
               decoration: InputDecoration(
-                labelText: 'Konfirmasi Password Baru',
-                prefixIcon: Icon(
-                  Icons.lock,
-                  color: Colors.grey,
-                ),
+                labelText: 'Konfirmasi Password',
+                prefixIcon: Icon(Icons.lock, color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
+                suffixIcon: IconButton(
+                  icon: _isConfirmPasswordObscured
+                      ? Icon(Icons.visibility_off)
+                      : Icon(Icons.visibility),
+                  onPressed: () {
+                    setState(() {
+                      _isConfirmPasswordObscured = !_isConfirmPasswordObscured;
+                    });
+                  },
+                ),
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Konfirmasi password harus diisi';
+                }
+                if (value != newPasswordController.text) {
+                  return 'Konfirmasi password tidak cocok';
+                }
+                return null;
+              },
             ),
             SizedBox(height: 30),
             Container(
@@ -53,13 +180,7 @@ class passwordBaru extends StatelessWidget {
               width: double.infinity,
               child: TextButton(
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProfilePage(),
-                    ),
-                    (Route<dynamic> route) => false,
-                  );
+                  _changePassword();
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: const Color(0xFF5F7C5D),

@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
 
-class InputProker extends StatelessWidget {
+class InputProker extends StatefulWidget {
+  @override
+  _InputProkerState createState() => _InputProkerState();
+}
+
+class _InputProkerState extends State<InputProker> {
+  OutlineInputBorder _outlineInputBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(15),
+    borderSide: BorderSide(color: Colors.grey), // Warna border default
+  );
+
+  OutlineInputBorder _focusedBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(15),
+    borderSide: BorderSide(color: Colors.grey), // Warna border saat diklik
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -9,35 +24,39 @@ class InputProker extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            SizedBox(height: 10),
             TextFormField(
               decoration: InputDecoration(
                 labelText: 'Nama Proker',
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                border: _outlineInputBorder,
+                focusedBorder: _focusedBorder,
+                prefixIcon: Icon(Icons.work),
               ),
             ),
             SizedBox(height: 10),
             TextFormField(
               decoration: InputDecoration(
                 labelText: 'Penanggung Jawab',
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                border: _outlineInputBorder,
+                focusedBorder: _focusedBorder,
+                prefixIcon: Icon(Icons.person),
               ),
             ),
             SizedBox(height: 10),
             TextFormField(
               decoration: InputDecoration(
                 labelText: 'Periode',
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                border: _outlineInputBorder,
+                focusedBorder: _focusedBorder,
+                prefixIcon: Icon(Icons.calendar_today),
               ),
             ),
             SizedBox(height: 20),
             TextFormField(
               decoration: InputDecoration(
                 labelText: 'Lampiran LPJ',
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                border: _outlineInputBorder,
+                focusedBorder: _focusedBorder,
                 suffixIcon: InkWell(
                   onTap: () {
                     _openFilePicker(context);
@@ -47,20 +66,22 @@ class InputProker extends StatelessWidget {
                     child: Icon(Icons.attach_file),
                   ),
                 ),
+                prefixIcon: Icon(Icons.description),
               ),
               readOnly: true,
               onTap: () {
                 _openFilePicker(context);
               },
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             TextFormField(
               decoration: InputDecoration(
                 labelText: 'Deskripsi',
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                border: _outlineInputBorder,
+                focusedBorder: _focusedBorder,
+                prefixIcon: Icon(Icons.description),
               ),
-              maxLines: 5,
+              maxLines: 10,
             ),
             SizedBox(height: 20),
             Row(
@@ -70,40 +91,30 @@ class InputProker extends StatelessWidget {
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     primary: Colors.white,
-                    elevation: 0,
+                    elevation: 5,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
-                      side: BorderSide(color: Colors.green, width: 2),
+                      side: BorderSide(color: Colors.green[400]!, width: 2),
                     ),
                   ),
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.white!, Colors.white!],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Container(
-                      constraints: BoxConstraints(minWidth: 88, minHeight: 44),
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.delete, color: Colors.black54),
-                          SizedBox(width: 8),
-                          Text(
-                            "Hapus",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black54,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Montserrat',
-                            ),
+                  child: Container(
+                    constraints: BoxConstraints(minWidth: 88, minHeight: 44),
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.delete, color: Colors.black54),
+                        SizedBox(width: 8),
+                        Text(
+                          "Hapus",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Montserrat',
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -117,34 +128,24 @@ class InputProker extends StatelessWidget {
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.green[400]!, Colors.green[800]!],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Container(
-                      constraints: BoxConstraints(minWidth: 20, minHeight: 20),
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.send, color: Colors.white),
-                          SizedBox(width: 8),
-                          Text(
-                            "Kirim",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Montserrat',
-                            ),
+                  child: Container(
+                    constraints: BoxConstraints(minWidth: 88, minHeight: 44),
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.send, color: Colors.white),
+                        SizedBox(width: 8),
+                        Text(
+                          "Kirim",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Montserrat',
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

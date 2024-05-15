@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:projectone/Models/UserData.dart';
 import 'package:projectone/database/DBHelper.dart';
 import 'package:projectone/database/apiutils.dart';
@@ -48,8 +49,7 @@ class _editProfileState extends State<editProfile> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
-              controller:
-                  _namaUKMController, // Use controller for this TextField
+              controller: _namaUKMController,
               decoration: InputDecoration(
                 labelText: 'Nama UKM',
                 prefixIcon: Icon(Icons.home, color: Colors.grey),
@@ -60,8 +60,7 @@ class _editProfileState extends State<editProfile> {
             ),
             SizedBox(height: 20),
             TextField(
-              controller:
-                  _emailUKMController, // Use controller for this TextField
+              controller: _emailUKMController,
               decoration: InputDecoration(
                 labelText: 'Email UKM',
                 prefixIcon: Icon(Icons.email, color: Colors.grey),
@@ -72,8 +71,7 @@ class _editProfileState extends State<editProfile> {
             ),
             SizedBox(height: 20),
             TextField(
-              controller:
-                  _namaKetuaController, // Use controller for this TextField
+              controller: _namaKetuaController,
               decoration: InputDecoration(
                 labelText: 'Nama Ketua',
                 prefixIcon: Icon(Icons.person, color: Colors.grey),
@@ -138,7 +136,6 @@ class _editProfileState extends State<editProfile> {
         _namaKetuaController.text = namaKetua;
       });
     } else {
-      // Handle case when no profile data is found
     }
   }
 
@@ -163,11 +160,13 @@ class _editProfileState extends State<editProfile> {
 
       if (response.statusCode == 200) {
         print('User data updated successfully');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Data profile berhasil diubah'),
-          ),
-        );
+        AnimatedSnackBar.rectangle(
+          'Success',
+          'Data profile berhasil diubah',
+          type: AnimatedSnackBarType.success,
+          brightness: Brightness.light,
+        ).show(context);
+
         Navigator.of(context).pop(); // Kembali ke layar sebelumnya
 
         // Simpan perubahan data ke dalam database sqflite

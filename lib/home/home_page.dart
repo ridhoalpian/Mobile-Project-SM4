@@ -114,17 +114,13 @@ class _HomePageState extends State<HomePage> {
           TextButton(
             child: Text("Ya"),
             onPressed: () async {
-              // Hapus token dari SharedPreferences
               SharedPreferences prefs = await SharedPreferences.getInstance();
               await prefs.remove('token');
 
-              // Hapus data dari database SQFlite
               await DBHelper.deleteUKMData();
 
-              // Tutup dialog
               Navigator.of(context).pop();
 
-              // Arahkan pengguna kembali ke halaman login
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => LoginPage()),
@@ -170,10 +166,10 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 10),
             Divider(
-              color: Colors.grey, // Warna garis
-              thickness: 1, // Ketebalan garis
-              indent: 15, // Indentasi dari kiri
-              endIndent: 15, // Indentasi dari kanan
+              color: Colors.grey,
+              thickness: 1,
+              indent: 15,
+              endIndent: 15,
             ),
             for (var i = 0; i < _menuTitles.length; i++)
               Column(

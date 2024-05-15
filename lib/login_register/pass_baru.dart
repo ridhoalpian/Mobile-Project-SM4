@@ -1,6 +1,7 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:projectone/database/apiutils.dart';
 import 'package:projectone/login_register/login_page.dart';
 
 class PassBaru extends StatefulWidget {
@@ -175,7 +176,7 @@ class _PassBaruState extends State<PassBaru> {
       return;
     }
 
-    final Uri uri = Uri.parse('http://10.0.2.2:8000/api/change-password');
+    final Uri uri =  Uri.parse(ApiUtils.buildUrl('change-password'));
     final response = await http.post(
       uri,
       body: {'email': widget.email, 'password': newPassword},
