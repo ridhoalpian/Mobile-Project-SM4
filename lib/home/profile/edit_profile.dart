@@ -7,12 +7,13 @@ import 'package:projectone/database/DBHelper.dart';
 import 'package:projectone/database/apiutils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class editProfile extends StatefulWidget {
+class EditProfile extends StatefulWidget {
   @override
-  _editProfileState createState() => _editProfileState();
+  _EditProfileState createState() => _EditProfileState();
 }
 
-class _editProfileState extends State<editProfile> {
+class _EditProfileState extends State<EditProfile> {
+  int userId = 0;
   String emailUKM = '';
   String namaUKM = '';
   String namaKetua = '';
@@ -127,6 +128,7 @@ class _editProfileState extends State<editProfile> {
       UserData profileData = UserData.fromJson(profileDataMap);
 
       setState(() {
+        userId = profileData.id; // Assign the userId
         namaUKM = profileData.name;
         emailUKM = profileData.email;
         namaKetua = profileData.ketua;
@@ -136,6 +138,7 @@ class _editProfileState extends State<editProfile> {
         _namaKetuaController.text = namaKetua;
       });
     } else {
+      // Handle case when no profile data is found
     }
   }
 
@@ -183,11 +186,12 @@ class _editProfileState extends State<editProfile> {
 
   Future<void> _saveChangesToLocalDatabase() async {
     Map<String, dynamic> newData = {
+      'id': userId, // Add the id to the newData map
       'email': _emailUKMController.text,
       'name': _namaUKMController.text,
       'ketua': _namaKetuaController.text,
     };
 
-    await DBHelper.editUserData(newData);
+    await DBHelper.editUserData(userId, newData);
   }
 }

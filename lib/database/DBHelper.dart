@@ -53,13 +53,13 @@ class DBHelper {
     await db.delete(_tableName);
   }
 
-  static Future<void> editUserData(Map<String, dynamic> newData) async {
+  static Future<void> editUserData(int id, Map<String, dynamic> newData) async {
     final db = await database;
     await db.update(
       _tableName,
       newData,
-      where: 'email = ?', // Menggunakan email sebagai kriteria
-      whereArgs: [newData['email']], // Menggunakan nilai email dari newData
+      where: 'id = ?',
+      whereArgs: [id],
     );
   }
 }
