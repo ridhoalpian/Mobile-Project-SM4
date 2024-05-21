@@ -143,7 +143,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> updateProfile() async {
-    String apiUrl = ApiUtils.buildUrl('update-user');
+    String apiUrl = ApiUtils.buildUrl('api/update-user');
     String? token = await _getToken();
 
     Map<String, String> headers = {

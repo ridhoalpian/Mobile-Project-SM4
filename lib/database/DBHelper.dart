@@ -25,6 +25,7 @@ class DBHelper {
         await db.execute('''
         CREATE TABLE $_tableName(
           id INTEGER PRIMARY KEY,
+          userid INTEGER,
           name TEXT,
           email TEXT,
           ketua TEXT
@@ -61,5 +62,19 @@ class DBHelper {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  static Future<int?> getUserId() async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.query(
+      _tableName,
+      columns: ['userid'],
+      limit: 1,
+    );
+  
+    if (result.isNotEmpty) {
+      return result.first['userid'] as int?;
+    }
+    return null;
   }
 }

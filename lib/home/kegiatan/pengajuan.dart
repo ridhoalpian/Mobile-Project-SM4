@@ -29,6 +29,16 @@ class _pengajuanKegiatanState extends State<pengajuanKegiatan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Input Pengajuan Kegiatan',
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -46,11 +56,10 @@ class _pengajuanKegiatanState extends State<pengajuanKegiatan> {
             SizedBox(height: 10),
             DropdownButtonFormField2<String>(
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.work),
-                border: _outlineInputBorder,
-                focusedBorder: _focusedBorder,
-                hintText: 'Pilih Proker'
-              ),
+                  prefixIcon: Icon(Icons.work),
+                  border: _outlineInputBorder,
+                  focusedBorder: _focusedBorder,
+                  hintText: 'Pilih Proker'),
               items: genderItems
                   .map((item) => DropdownMenuItem<String>(
                         value: item,

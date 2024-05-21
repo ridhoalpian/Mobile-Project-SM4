@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:projectone/Models/UserData.dart';
 import 'package:projectone/database/DBHelper.dart';
 import 'package:projectone/home/dashboard/dashboard_page.dart';
@@ -39,7 +40,10 @@ class _HomePageState extends State<HomePage> {
         emailUKM = profileData.email;
       });
     } else {
-      // Handle case when no profile data is found
+      setState(() {
+        namaUKM = 'No Name';
+        emailUKM = 'No Email';
+      });
     }
   }
 
@@ -93,45 +97,33 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _selectedIndex = index;
       });
-      Navigator.pop(context); // Menutup drawer setelah item dipilih
+      Navigator.pop(context);
     }
   }
 
   void _showLogoutConfirmationDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text("Konfirmasi"),
-        content: Text("Yakin ingin keluar?"),
-        actions: <Widget>[
-          TextButton(
-            child: Text("Tidak"),
-            onPressed: () {
-              Navigator.of(context).pop(); // Tutup dialog
-            },
-          ),
-          TextButton(
-            child: Text("Ya"),
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.remove('token');
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.warning,
+      animType: AnimType.bottomSlide,
+      title: 'Konfirmasi',
+      desc: 'Yakin ingin keluar?',
+      btnCancelText: 'Tidak',
+      btnCancelOnPress: () {},
+      btnOkText: 'Ya',
+      btnOkOnPress: () async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.remove('token');
 
-              await DBHelper.deleteUKMData();
+        await DBHelper.deleteUKMData();
 
-              Navigator.of(context).pop();
-
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
-              );
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      },
+    ).show();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,32 +136,41 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.symmetric(horizontal: 15),
           children: [
             SizedBox(height: 80),
-            Icon(
-              Icons.account_circle,
-              size: 80,
-              color: Colors.green[200],
-            ),
-            SizedBox(height: 10),
-            Text(
-              namaUKM,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 5),
-            Text(
-              emailUKM,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.black87,
+            GestureDetector(
+              onTap: () {
+                _loadProfileData();
+              },
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.account_circle,
+                    size: 80,
+                    color: Colors.green[200],
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    namaUKM,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    emailUKM,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 10),
+                  Divider(
+                    color: Colors.grey,
+                    thickness: 1,
+                    indent: 15,
+                    endIndent: 15,
+                  ),
+                ],
               ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 10),
-            Divider(
-              color: Colors.grey,
-              thickness: 1,
-              indent: 15,
-              endIndent: 15,
             ),
             for (var i = 0; i < _menuTitles.length; i++)
               Column(
@@ -201,7 +202,10 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: _pages[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
     );
   }
 }

@@ -176,7 +176,7 @@ class _PassBaruState extends State<PassBaru> {
       return;
     }
 
-    final Uri uri =  Uri.parse(ApiUtils.buildUrl('change-password'));
+    final Uri uri =  Uri.parse(ApiUtils.buildUrl('api/change-password'));
     final response = await http.post(
       uri,
       body: {'email': widget.email, 'password': newPassword},

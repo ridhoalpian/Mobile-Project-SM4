@@ -41,33 +41,6 @@ class _LoginPageState extends State<LoginPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
     if (token != null) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SpinKitFadingCircle(
-                  color: Colors.white,
-                  size: 50.0,
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'Tunggu Sebentar...',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      );
       await fetchDataWithToken(token);
       Navigator.pushReplacement(
         context,
@@ -239,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> fetchDataWithToken(String token) async {
     var headers = {'Authorization': 'Bearer $token'};
     final response = await http.get(
-      Uri.parse(ApiUtils.buildUrl('user-data')),
+      Uri.parse(ApiUtils.buildUrl('api/user-data')),
       headers: headers,
     );
 
@@ -291,7 +264,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       final response = await http.post(
-        Uri.parse(ApiUtils.buildUrl('login')),
+        Uri.parse(ApiUtils.buildUrl('api/login')),
         body: {
           'email': email,
           'password': password,
@@ -310,7 +283,7 @@ class _LoginPageState extends State<LoginPage> {
           List<Map<String, dynamic>> userDataList = await DBHelper.getUKMData();
           if (userDataList.isNotEmpty) {
             Map<String, dynamic> userDataMap = userDataList.first;
-            String namaUKM = userDataMap['name']; // Assuming the key is 'name'
+            String namaUKM = userDataMap['name'];
 
             AnimatedSnackBar.rectangle(
               'Success',

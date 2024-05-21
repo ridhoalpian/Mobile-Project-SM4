@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:projectone/home/lpj/datalpj.dart';
 import 'package:projectone/home/lpj/pengajuanlpj.dart';
 
 class LpjPage extends StatefulWidget {
@@ -9,7 +8,6 @@ class LpjPage extends StatefulWidget {
 
 class _LpjPageState extends State<LpjPage> {
   PageController _pageController = PageController();
-  int _currentPage = 0;
 
   @override
   void dispose() {
@@ -20,79 +18,26 @@ class _LpjPageState extends State<LpjPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Center(
+        child: Text(
+          'Ini adalah halaman data lpj',
+          style: TextStyle(fontSize: 20),
+        ),
+      ),
+      floatingActionButton: Stack(
         children: [
-          SizedBox(
-            width: double.infinity,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _currentPage = 0;
-                        _pageController.animateToPage(_currentPage,
-                            duration: Duration(milliseconds: 500),
-                            curve: Curves.ease);
-                      });
-                    },
-                    style: TextButton.styleFrom(
-                      foregroundColor: Color(0xFF5F7C5D), backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0)),
-                    ),
-                    child: Text('Pengajuan LPJ'),
-                  ),
-                ),
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _currentPage = 1;
-                        _pageController.animateToPage(_currentPage,
-                            duration: Duration(milliseconds: 500),
-                            curve: Curves.ease);
-                      });
-                    },
-                    style: TextButton.styleFrom(
-                      foregroundColor: Color(0xFF5F7C5D), backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0)),
-                    ),
-                    child: Text('Data LPJ'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width / 2,
-                height: 5,
-                color: _currentPage == 0 ? Color(0xFF5F7C5D) : Colors.transparent,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width / 2,
-                height: 5,
-                color: _currentPage == 1 ? Color(0xFF5F7C5D) : Colors.transparent,
-              ),
-            ],
-          ),
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentPage = index;
-                });
+          Positioned(
+            bottom: 20.0,
+            right: 16.0,
+            child: FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => pengajuanLpj()),
+                );
               },
-              children: [
-                pengajuanLpj(),
-                dataLpj(),
-              ],
+              icon: Icon(Icons.edit),
+              label: Text('Tambah Pengajuan LPJ'),
             ),
           ),
         ],

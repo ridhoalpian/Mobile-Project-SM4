@@ -1,6 +1,7 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:projectone/database/apiutils.dart';
 import 'package:projectone/login_register/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -234,7 +235,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> _saveRegistrationData() async {
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/register'),
+        Uri.parse(ApiUtils.buildUrl('api/register')),
         body: {
           'name': _namaUKMController.text,
           'email': _emailUKMController.text,

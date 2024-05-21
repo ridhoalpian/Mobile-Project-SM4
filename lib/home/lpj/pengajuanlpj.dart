@@ -26,10 +26,19 @@ class _pengajuanLpjState extends State<pengajuanLpj> {
     borderSide: BorderSide(color: Colors.grey), // Warna border saat diklik
   );
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Input Pengajuan LPJ',
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -37,45 +46,44 @@ class _pengajuanLpjState extends State<pengajuanLpj> {
           children: [
             Container(
               child: DropdownButtonFormField2<String>(
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.work),
-                border: _outlineInputBorder,
-                focusedBorder: _focusedBorder,
-                hintText: 'Pilih Proker'
-              ),
-              items: genderItems
-                  .map((item) => DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(
-                          item,
-                        ),
-                      ))
-                  .toList(),
-              validator: (value) {
-                if (value == null) {
-                  return 'Anda belum memilih Proker';
-                }
-                return null;
-              },
-              onChanged: (value) {
-                //Do something when selected item is changed.
-              },
-              onSaved: (value) {
-                selectedValue = value.toString();
-              },
-              iconStyleData: const IconStyleData(
-                icon: Icon(
-                  Icons.arrow_drop_down,
-                  color: Colors.black45,
+                decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.work),
+                    border: _outlineInputBorder,
+                    focusedBorder: _focusedBorder,
+                    hintText: 'Pilih Proker'),
+                items: genderItems
+                    .map((item) => DropdownMenuItem<String>(
+                          value: item,
+                          child: Text(
+                            item,
+                          ),
+                        ))
+                    .toList(),
+                validator: (value) {
+                  if (value == null) {
+                    return 'Anda belum memilih Proker';
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  //Do something when selected item is changed.
+                },
+                onSaved: (value) {
+                  selectedValue = value.toString();
+                },
+                iconStyleData: const IconStyleData(
+                  icon: Icon(
+                    Icons.arrow_drop_down,
+                    color: Colors.black45,
+                  ),
+                  iconSize: 24,
                 ),
-                iconSize: 24,
-              ),
-              dropdownStyleData: DropdownStyleData(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
+                dropdownStyleData: DropdownStyleData(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                 ),
               ),
-            ),
             ),
             SizedBox(height: 20),
             TextFormField(

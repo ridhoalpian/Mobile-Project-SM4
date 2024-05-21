@@ -58,7 +58,7 @@ class _passwordBaruState extends State<passwordBaru> {
     // Kirim permintaan ke API untuk mengubah password
     try {
       var response = await http.post(
-        Uri.parse(ApiUtils.buildUrl('change-password')),
+        Uri.parse(ApiUtils.buildUrl('api/change-password')),
         body: {'email': emailUKM, 'password': newPassword},
       );
 
@@ -71,7 +71,6 @@ class _passwordBaruState extends State<passwordBaru> {
           brightness: Brightness.light,
         ).show(context);
 
-        // Navigasi kembali ke halaman profil setelah password berhasil diperbarui
         Navigator.of(context).pop();
       } else {
         AnimatedSnackBar.rectangle(
@@ -82,7 +81,6 @@ class _passwordBaruState extends State<passwordBaru> {
         ).show(context);
       }
     } catch (e) {
-      // Tangani kesalahan yang mungkin terjadi selama permintaan
       print('Error: $e');
       AnimatedSnackBar.rectangle(
         'Info',

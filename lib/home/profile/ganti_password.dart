@@ -21,7 +21,7 @@ class _GantiPasswordState extends State<GantiPassword> {
     if (token != null) {
       // Panggil fungsi API untuk validasi password lama
       var response = await http.post(
-        Uri.parse(ApiUtils.buildUrl('validate-old-password')),
+        Uri.parse(ApiUtils.buildUrl('api/validate-old-password')),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

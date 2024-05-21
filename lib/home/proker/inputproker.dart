@@ -19,12 +19,22 @@ class _InputProkerState extends State<InputProker> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Input Proker',
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 10),
             TextFormField(
               decoration: InputDecoration(
                 labelText: 'Nama Proker',

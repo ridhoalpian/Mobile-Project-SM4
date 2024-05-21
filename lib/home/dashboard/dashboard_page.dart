@@ -14,9 +14,9 @@ class DashboarPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: ListTile(
-              leading: Icon(Icons.analytics, color: Colors.blue),
-              title: Text('Analytics'),
-              subtitle: Text('View detailed analytics'),
+              leading: Icon(Icons.emoji_events, color: Colors.green),
+              title: Text('Prestasi'),
+              subtitle: Text('Jumlah Prestasi 0'),
               onTap: () {
                 // Handle tap
               },
@@ -29,9 +29,9 @@ class DashboarPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: ListTile(
-              leading: Icon(Icons.assignment, color: Colors.green),
-              title: Text('Tasks'),
-              subtitle: Text('View and manage tasks'),
+              leading: Icon(Icons.book_rounded, color: Colors.orange),
+              title: Text('Program Kerja'),
+              subtitle: Text('Jumlah Program Kerja 0'),
               onTap: () {
                 // Handle tap
               },
@@ -44,24 +44,9 @@ class DashboarPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: ListTile(
-              leading: Icon(Icons.event, color: Colors.red),
-              title: Text('Events'),
-              subtitle: Text('View upcoming events'),
-              onTap: () {
-                // Handle tap
-              },
-            ),
-          ),
-          SizedBox(height: 16),
-          Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: ListTile(
-              leading: Icon(Icons.notifications, color: Colors.orange),
-              title: Text('Notifications'),
-              subtitle: Text('View recent notifications'),
+              leading: Icon(Icons.calendar_month_rounded, color: Colors.cyan),
+              title: Text('Kegiatan'),
+              subtitle: Text('Jumlah Kegiatan 0'),
               onTap: () {
                 // Handle tap
               },
