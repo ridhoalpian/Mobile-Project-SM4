@@ -6,13 +6,13 @@ import 'package:animated_snack_bar/animated_snack_bar.dart';
 class LupaPassword extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final EmailOTP myauth = EmailOTP();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lupa Password',
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('Lupa Password', style: TextStyle(fontWeight: FontWeight.bold)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -22,38 +22,46 @@ class LupaPassword extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            SizedBox(height: 40),
-            Image.asset(
-              'assets/images/lupapassword.png',
-              height: 150,
-              width: 150,
-            ),
-            SizedBox(height: 40),
-            Text(
-              'Masukkan email yang digunakan pada saat pertama kali mendaftar',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              SizedBox(height: 40),
+              Image.asset(
+                'assets/images/lupapassword.png',
+                height: 150,
+                width: 150,
               ),
-            ),
-            SizedBox(height: 30),
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                labelText: 'Email UKM',
-                prefixIcon: Icon(Icons.email, color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
+              SizedBox(height: 40),
+              Text(
+                'Masukkan email yang digunakan pada saat pertama kali mendaftar',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 30),
+              TextFormField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  labelText: 'Email UKM',
+                  prefixIcon: Icon(Icons.email, color: Colors.grey),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Email harus diisi';
+                  }
+                  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                  if (!emailRegex.hasMatch(value)) {
+                    return 'Masukkan alamat email yang valid';
+                  }
+                  return null;
+                },
               ),
-            ),
-            SizedBox(height: 60),
-          ],
+              SizedBox(height: 60),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Container(
@@ -63,33 +71,38 @@ class LupaPassword extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () async {
-                myauth.setConfig(
+                if (_formKey.currentState!.validate()) {
+                  myauth.setConfig(
                     appEmail: "contact@hdevcoder.com",
                     appName: "Email OTP",
                     userEmail: emailController.text,
                     otpLength: 4,
-                    otpType: OTPType.digitsOnly);
-                if (await myauth.sendOTP() == true) {
-                  AnimatedSnackBar.rectangle(
-                    'Success',
-                    'OTP berhasil dikirim',
-                    type: AnimatedSnackBarType.success,
-                    brightness: Brightness.light,
-                  ).show(context);
-                  Navigator.pushReplacement(
+                    otpType: OTPType.digitsOnly,
+                  );
+                  if (await myauth.sendOTP() == true) {
+                    AnimatedSnackBar.rectangle(
+                      'Success',
+                      'OTP berhasil dikirim',
+                      type: AnimatedSnackBarType.success,
+                      brightness: Brightness.light,
+                    ).show(context);
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => VerifOtpPage(
-                                myauth: myauth,
-                                email: emailController.text,
-                              )));
-                } else {
-                  AnimatedSnackBar.rectangle(
-                    'Error',
-                    'OTP gagal dikirim',
-                    type: AnimatedSnackBarType.error,
-                    brightness: Brightness.light,
-                  ).show(context);
+                        builder: (context) => VerifOtpPage(
+                          myauth: myauth,
+                          email: emailController.text,
+                        ),
+                      ),
+                    );
+                  } else {
+                    AnimatedSnackBar.rectangle(
+                      'Error',
+                      'OTP gagal dikirim',
+                      type: AnimatedSnackBarType.error,
+                      brightness: Brightness.light,
+                    ).show(context);
+                  }
                 }
               },
               style: ElevatedButton.styleFrom(

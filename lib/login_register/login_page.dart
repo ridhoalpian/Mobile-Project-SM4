@@ -290,6 +290,7 @@ class _LoginPageState extends State<LoginPage> {
               'Selamat Datang $namaUKM',
               type: AnimatedSnackBarType.success,
               brightness: Brightness.light,
+              duration: Duration(seconds: 4),
             ).show(context);
 
             Navigator.pushReplacement(
@@ -304,6 +305,7 @@ class _LoginPageState extends State<LoginPage> {
               'Email atau password salah',
               type: AnimatedSnackBarType.info,
               brightness: Brightness.light,
+              duration: Duration(seconds: 4),
             ).show(context);
           }
         } else {
@@ -312,6 +314,7 @@ class _LoginPageState extends State<LoginPage> {
             'Email atau password salah',
             type: AnimatedSnackBarType.info,
             brightness: Brightness.light,
+            duration: Duration(seconds: 4),
           ).show(context);
         }
       } else {
@@ -320,6 +323,7 @@ class _LoginPageState extends State<LoginPage> {
           'Email atau password salah',
           type: AnimatedSnackBarType.info,
           brightness: Brightness.light,
+          duration: Duration(seconds: 4),
         ).show(context);
       }
     }

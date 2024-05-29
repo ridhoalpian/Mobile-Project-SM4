@@ -49,9 +49,9 @@ class _HomePageState extends State<HomePage> {
 
   List<String> _menuTitles = [
     'Dashboard',
+    'Prestasi',
     'Program Kerja',
     'Kegiatan',
-    'Prestasi',
     'Pendanaan',
     'Lembar Penanggung Jawaban',
     'Pengaturan Profile',
@@ -60,9 +60,9 @@ class _HomePageState extends State<HomePage> {
 
   List<IconData> _icons = [
     Icons.dashboard_customize_rounded,
+    Icons.emoji_events,
     Icons.book_rounded,
     Icons.calendar_month_rounded,
-    Icons.emoji_events,
     Icons.monetization_on,
     Icons.file_copy_rounded,
     Icons.settings,
@@ -71,9 +71,9 @@ class _HomePageState extends State<HomePage> {
 
   List<Color> _iconColors = [
     Colors.red,
+    Colors.green,
     Colors.orange,
     Colors.cyan,
-    Colors.green,
     Colors.blue,
     Colors.indigo,
     Colors.purple,
@@ -82,9 +82,9 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> _pages = [
     DashboarPage(),
+    PrestasiPage(),
     ProkerPage(),
     KegiatanPage(),
-    PrestasiPage(),
     DanaPage(),
     LpjPage(),
     ProfilePage(),
@@ -129,9 +129,21 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_menuTitles[_selectedIndex]),
+        backgroundColor: Colors.white,
+        title: Text(
+          _menuTitles[_selectedIndex],
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0), // Height of the line
+          child: Container(
+            color: Colors.grey, // Color of the line
+            height: 0.2, // Height of the line
+          ),
+        ),
       ),
       drawer: Drawer(
+        backgroundColor: Colors.white,
         child: ListView(
           padding: EdgeInsets.symmetric(horizontal: 15),
           children: [
@@ -142,10 +154,25 @@ class _HomePageState extends State<HomePage> {
               },
               child: Column(
                 children: [
-                  Icon(
-                    Icons.account_circle,
-                    size: 80,
-                    color: Colors.green[200],
+                  Stack(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.grey.withOpacity(0.2),
+                          border: Border.all(
+                            color: Colors.grey.withOpacity(0.2),
+                            width: 2,
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundImage: NetworkImage(
+                              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJoqKv2TQNEOQRh6CXSrMF5Jhp0mEp95LwPoDHo2bPdY-wsTkzz1ih_LPxcbkH82WUBBk&usqp=CAU'),
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 10),
                   Text(
@@ -165,7 +192,7 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: 10),
                   Divider(
                     color: Colors.grey,
-                    thickness: 1,
+                    thickness: 0.2,
                     indent: 15,
                     endIndent: 15,
                   ),
@@ -177,7 +204,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: Colors.green[50],
+                      backgroundColor: Colors.grey[200],
                       child: Icon(_icons[i], color: _iconColors[i]),
                     ),
                     title: Text(
@@ -192,7 +219,7 @@ class _HomePageState extends State<HomePage> {
                   if (i == 5)
                     Divider(
                       color: Colors.grey, // Warna garis
-                      thickness: 1, // Ketebalan garis
+                      thickness: 0.2, // Ketebalan garis
                       indent: 15, // Indentasi dari kiri
                       endIndent: 15, // Indentasi dari kanan
                     ),

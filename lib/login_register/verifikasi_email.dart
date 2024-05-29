@@ -220,8 +220,11 @@ class _VerifOtpPageState extends State<VerifOtpPage> {
         maxLength: 1,
         decoration: InputDecoration(
           counterText: '',
+          filled: true,
+          fillColor: Colors.grey[200],
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide.none,
           ),
         ),
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),

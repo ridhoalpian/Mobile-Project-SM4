@@ -58,9 +58,6 @@ class _PassBaruState extends State<PassBaru> {
                 decoration: InputDecoration(
                   labelText: 'Password Baru',
                   prefixIcon: Icon(Icons.lock, color: Colors.grey),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
                   suffixIcon: IconButton(
                     icon: _isPasswordObscured
                         ? Icon(Icons.visibility_off)
@@ -89,9 +86,6 @@ class _PassBaruState extends State<PassBaru> {
                 decoration: InputDecoration(
                   labelText: 'Konfirmasi Password',
                   prefixIcon: Icon(Icons.lock, color: Colors.grey),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
                   suffixIcon: IconButton(
                     icon: _isConfirmPasswordObscured
                         ? Icon(Icons.visibility_off)

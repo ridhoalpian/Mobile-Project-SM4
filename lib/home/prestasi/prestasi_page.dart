@@ -14,6 +14,8 @@ class PrestasiPage extends StatefulWidget {
 class _PrestasiPageState extends State<PrestasiPage> {
   late Future<List<dynamic>> _futurePrestasi;
   int? _userId;
+  String namaUKM = '';
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -32,108 +34,185 @@ class _PrestasiPageState extends State<PrestasiPage> {
   }
 
   Future<List<dynamic>> fetchPrestasi(int userId) async {
-    final response = await http.get(Uri.parse(ApiUtils.buildUrl('api/prestasi?user_id=$userId')));
-
+    final response = await http
+        .get(Uri.parse(ApiUtils.buildUrl('api/prestasi?user_id=$userId')));
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
-      // Membalik urutan data agar data terbaru berada di urutan pertama
       return data.reversed.toList();
     } else {
       throw Exception('Failed to load prestasi');
     }
   }
 
+  Future<void> _refreshPrestasi() async {
+    setState(() {
+      _futurePrestasi = fetchPrestasi(_userId!);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.emoji_events,
-                size: 100,
-                color: Colors.amber,
-              ),
-              SizedBox(height: 20),
-              Text(
-                'Prestasi Kami',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 20),
-              Text(
-                'Berikut adalah daftar prestasi yang telah diraih:',
-                style: TextStyle(fontSize: 16),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20),
-              _userId == null
-                  ? Center(child: CircularProgressIndicator())
-                  : Expanded(
-                      child: FutureBuilder<List<dynamic>>(
-                        future: _futurePrestasi,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
-                          } else if (snapshot.hasError) {
-                            return Center(child: Text('Error: ${snapshot.error}'));
-                          } else {
-                            List<dynamic> prestasi = snapshot.data!;
-                            return ListView.builder(
-                              itemCount: prestasi.length,
-                              itemBuilder: (context, index) {
-                                return Card(
-                                  margin: EdgeInsets.symmetric(vertical: 10),
-                                  child: ListTile(
-                                    leading: Icon(
-                                      Icons.emoji_events,
-                                      size: 30,
-                                      color: Colors.amber,
-                                    ),
-                                    title: Text(
-                                      '[${prestasi[index]['juara']}] ${prestasi[index]['namalomba']}',
-                                    ),
-                                    subtitle: Text(
-                                      "status: '${prestasi[index]['statusprestasi']}'",
-                                    ),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => PrestasiDetailPage(prestasi: prestasi[index]),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                            );
-                          }
-                        },
-                      ),
+      backgroundColor: Colors.white,
+      body: RefreshIndicator(
+        onRefresh: _refreshPrestasi,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Cari Prestasi',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    labelStyle: TextStyle(color: Colors.grey),
+                    prefixIcon: Icon(Icons.search, color: Colors.grey),
+                    fillColor: Colors.grey[200], // Light grey background color
+                    filled: true, // Fills the background color
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none, // No border
                     ),
-            ],
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none, // No border when focused
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none, // No border when enabled
+                    ),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value.toLowerCase();
+                    });
+                  },
+                ),
+                SizedBox(height: 20),
+                _userId == null
+                    ? Center(child: CircularProgressIndicator())
+                    : Expanded(
+                        child: FutureBuilder<List<dynamic>>(
+                          future: _futurePrestasi,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else {
+                              List<dynamic> prestasi = snapshot.data!;
+                              if (_searchQuery.isNotEmpty) {
+                                prestasi = prestasi.where((item) {
+                                  return item['namalomba']
+                                      .toString()
+                                      .toLowerCase()
+                                      .contains(_searchQuery);
+                                }).toList();
+                              }
+                              return ListView.builder(
+                                itemCount: prestasi.length,
+                                itemBuilder: (context, index) {
+                                  return Card(
+                                    color: Colors.green[50],
+                                    margin: EdgeInsets.symmetric(vertical: 10),
+                                    child: ListTile(
+                                      leading: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              10), // Rounded corners
+                                          color:
+                                              Colors.green[50], // Accent color
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 5),
+                                        child: Icon(Icons.emoji_events,
+                                            size: 30, color: Colors.green),
+                                      ),
+                                      title: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              5), // Rounded corners
+                                          color:
+                                              Colors.green[200], // Accent color
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 5),
+                                        child: Text(
+                                          '[${prestasi[index]['juara']}] ${prestasi[index]['namalomba']}',
+                                          style: TextStyle(
+                                            color: Colors.black, // Text color
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                      subtitle: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              20), // Rounded corners
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 5),
+                                        child: Text(
+                                          "status: '${prestasi[index]['statusprestasi']}'",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                PrestasiDetailPage(
+                                                    prestasi: prestasi[index]),
+                                          ),
+                                        ).then((value) {
+                                          if (value == true &&
+                                              _userId != null) {
+                                            setState(() {
+                                              _futurePrestasi =
+                                                  fetchPrestasi(_userId!);
+                                            });
+                                          }
+                                        });
+                                      },
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      ),
+              ],
+            ),
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => PrestasiForm())).then((value) {
+          Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => PrestasiForm()))
+              .then((value) {
             if (value == true && _userId != null) {
-              // Jika nilai balik true, maka perbarui data prestasi
               setState(() {
                 _futurePrestasi = fetchPrestasi(_userId!);
               });
             }
           });
         },
-        icon: Icon(Icons.edit),
-        label: Text('Tambah Prestasi'),
+        icon: Icon(
+          Icons.edit,
+          color: Colors.black,
+        ),
+        label: Text('Tambah Prestasi',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.green[400],
       ),
     );
   }
