@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:projectone/database/DBHelper.dart';
 import 'package:projectone/database/apiutils.dart';
+import 'package:projectone/home/proker/detail_proker.dart';
 import 'package:projectone/home/proker/inputproker.dart';
 
 class ProkerPage extends StatefulWidget {
@@ -114,26 +115,26 @@ class _ProkerPageState extends State<ProkerPage> {
                                 itemCount: proker.length,
                                 itemBuilder: (context, index) {
                                   return Card(
-                                    color: Colors.green[50],
+                                    color: Colors.orange[50],
                                     margin: EdgeInsets.symmetric(vertical: 10),
                                     child: ListTile(
                                       leading: Container(
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(
                                               10), // Rounded corners
-                                          color: Colors.green[50],
+                                          color: Colors.orange[50],
                                           // Accent color
                                         ),
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 5, vertical: 5),
-                                        child: Icon(Icons.emoji_events,
-                                            size: 30, color: Colors.green),
+                                        child: Icon(Icons.book_rounded,
+                                            size: 30, color: Colors.orange),
                                       ),
                                       title: Container(
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(
                                               5), // Rounded corners
-                                          color: Colors.green[200],
+                                          color: Colors.orange[200],
                                           // Accent color
                                         ),
                                         padding: EdgeInsets.symmetric(
@@ -159,13 +160,13 @@ class _ProkerPageState extends State<ProkerPage> {
                                           text: TextSpan(
                                             children: [
                                               TextSpan(
-                                                text: 'Penanggung Jawab: ',
+                                                text: 'Status: ',
                                                 style: TextStyle(
                                                     color: Colors.black),
                                               ),
                                               TextSpan(
                                                 text: proker[index]
-                                                    ['penanggung_jawab'],
+                                                    ['status_proker'],
                                                 style: TextStyle(
                                                   color: Colors.black,
                                                   fontWeight: FontWeight.bold,
@@ -175,6 +176,17 @@ class _ProkerPageState extends State<ProkerPage> {
                                           ),
                                         ),
                                       ),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => ProkerDetail(
+                                              proker: proker[index],
+                                              isEditable: proker[index]['statusprestasi'] != 'terkirim' && proker[index]['statusprestasi'] != 'ditolak',
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   );
                                 },
@@ -188,29 +200,25 @@ class _ProkerPageState extends State<ProkerPage> {
           ),
         ),
       ),
-      floatingActionButton: Stack(
-        children: [
-          Positioned(
-            bottom: 20.0,
-            right: 16.0,
-            child: FloatingActionButton.extended(
-              onPressed: () {
-                Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => InputProker()))
-                    .then((value) {
-                  // ignore: unnecessary_null_comparison
-                  if (value == true && _userId != null) {
-                    setState(() {
-                      _futureProker = fetchProker(_userId);
-                    });
-                  }
-                });
-              },
-              icon: Icon(Icons.edit),
-              label: Text('Tambah Proker'),
-            ),
-          ),
-        ],
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => InputProker()))
+              .then((value) {
+            if (value == true) {
+              setState(() {
+                _futureProker = fetchProker(_userId);
+              });
+            }
+          });
+        },
+        icon: Icon(
+          Icons.edit,
+          color: Colors.black,
+        ),
+        label: Text('Tambah Proker',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.orange[200],
       ),
     );
   }
