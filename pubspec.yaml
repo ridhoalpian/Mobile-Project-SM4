@@ -48,6 +48,8 @@ dependencies:
   awesome_dialog: ^3.2.1
   image_picker: ^1.0.8
   table_calendar: ^3.0.4
+  file_picker: ^5.2.2
+  http_parser: ^4.0.0
 
 
 dev_dependencies:

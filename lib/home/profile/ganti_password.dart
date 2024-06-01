@@ -40,6 +40,7 @@ class _GantiPasswordState extends State<GantiPassword> {
               'Password lama tidak valid',
               type: AnimatedSnackBarType.error,
               brightness: Brightness.light,
+              duration: Duration(seconds: 4),
             ).show(context);
       }
     }

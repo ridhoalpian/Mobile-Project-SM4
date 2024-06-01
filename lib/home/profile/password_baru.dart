@@ -50,6 +50,7 @@ class _passwordBaruState extends State<passwordBaru> {
         'Password dan konfirmasi password tidak cocok',
         type: AnimatedSnackBarType.info,
         brightness: Brightness.light,
+        duration: Duration(seconds: 4),
       ).show(context);
 
       return;
@@ -69,6 +70,7 @@ class _passwordBaruState extends State<passwordBaru> {
           'Password berhasil diperbarui',
           type: AnimatedSnackBarType.success,
           brightness: Brightness.light,
+          duration: Duration(seconds: 4),
         ).show(context);
 
         Navigator.of(context).pop();
@@ -78,6 +80,7 @@ class _passwordBaruState extends State<passwordBaru> {
           'Gagal memperbarui password',
           type: AnimatedSnackBarType.warning,
           brightness: Brightness.light,
+          duration: Duration(seconds: 4),
         ).show(context);
       }
     } catch (e) {
@@ -87,6 +90,7 @@ class _passwordBaruState extends State<passwordBaru> {
         'Terjadi kesalahan, silakan coba lagi',
         type: AnimatedSnackBarType.info,
         brightness: Brightness.light,
+        duration: Duration(seconds: 4),
       ).show(context);
     }
   }

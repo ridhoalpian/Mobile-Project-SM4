@@ -174,7 +174,7 @@ class _PrestasiFormState extends State<PrestasiForm> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    'Unggah gambar dengan ukuran maksimum 2048 MB.',
+                    'Unggah gambar dengan ukuran maksimum 2048 kB',
                     style: TextStyle(color: Colors.red, fontSize: 12),
                   ),
                   SizedBox(height: 10),

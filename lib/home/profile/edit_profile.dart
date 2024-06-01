@@ -168,6 +168,7 @@ class _EditProfileState extends State<EditProfile> {
           'Data profile berhasil diubah',
           type: AnimatedSnackBarType.success,
           brightness: Brightness.light,
+          duration: Duration(seconds: 4),
         ).show(context);
 
         Navigator.of(context).pop(); // Kembali ke layar sebelumnya

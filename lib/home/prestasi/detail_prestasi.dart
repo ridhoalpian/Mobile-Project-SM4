@@ -8,8 +8,9 @@ import 'dart:io';
 
 class PrestasiDetailPage extends StatefulWidget {
   final Map<String, dynamic> prestasi;
+  final bool isEditable;
 
-  PrestasiDetailPage({required this.prestasi});
+  PrestasiDetailPage({required this.prestasi, required this.isEditable});
 
   @override
   _PrestasiDetailPageState createState() => _PrestasiDetailPageState();
@@ -65,14 +66,15 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: _updatePrestasi,
-            child: Text(
-              'Simpan',
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          if (widget.isEditable)
+            TextButton(
+              onPressed: _updatePrestasi,
+              child: Text(
+                'Simpan',
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -86,6 +88,7 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
                 SizedBox(height: 10),
                 TextFormField(
                   controller: _namaLombaController,
+                  readOnly: !widget.isEditable,
                   decoration: _buildDropDownDecoration(
                       labelText: 'Nama Lomba',
                       prefixIcon: Icons.text_snippet_rounded),
@@ -99,6 +102,7 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
                 SizedBox(height: 10),
                 TextFormField(
                   controller: _penyelenggaraController,
+                  readOnly: !widget.isEditable,
                   decoration: _buildDropDownDecoration(
                       labelText: 'Penyelenggara', prefixIcon: Icons.business),
                   validator: (value) {
@@ -110,33 +114,37 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
-                  readOnly: true,
+                  readOnly: !widget.isEditable,
                   onTap: () async {
-                    final DateTime? picked = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.parse(_tanggalLombaController.text),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101),
-                      builder: (BuildContext context, Widget? child) {
-                        return Theme(
-                          data: ThemeData.light().copyWith(
-                            colorScheme: ColorScheme.light(
-                              primary: Colors.green[400]!,
+                    if (widget.isEditable) {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate:
+                            DateTime.parse(_tanggalLombaController.text),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                        builder: (BuildContext context, Widget? child) {
+                          return Theme(
+                            data: ThemeData.light().copyWith(
+                              colorScheme: ColorScheme.light(
+                                primary: Colors.green[400]!,
+                              ),
+                              buttonTheme: ButtonThemeData(
+                                textTheme: ButtonTextTheme.primary,
+                              ),
                             ),
-                            buttonTheme: ButtonThemeData(
-                              textTheme: ButtonTextTheme.primary,
-                            ),
-                          ),
-                          child: child!,
-                        );
-                      },
-                    );
-                    if (picked != null &&
-                        picked !=
-                            DateTime.parse(_tanggalLombaController.text)) {
-                      setState(() {
-                        _tanggalLombaController.text = picked.toIso8601String();
-                      });
+                            child: child!,
+                          );
+                        },
+                      );
+                      if (picked != null &&
+                          picked !=
+                              DateTime.parse(_tanggalLombaController.text)) {
+                        setState(() {
+                          _tanggalLombaController.text =
+                              picked.toIso8601String();
+                        });
+                      }
                     }
                   },
                   decoration: _buildDropDownDecoration(
@@ -152,11 +160,13 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
                 SizedBox(height: 10),
                 DropdownButtonFormField2<String>(
                   value: _selectedLingkup,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedLingkup = value!;
-                    });
-                  },
+                  onChanged: widget.isEditable
+                      ? (value) {
+                          setState(() {
+                            _selectedLingkup = value!;
+                          });
+                        }
+                      : null,
                   items: ['kabupaten', 'provinsi', 'nasional', 'lainnya']
                       .map((String lingkup) {
                     return DropdownMenuItem<String>(
@@ -171,11 +181,13 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
                 SizedBox(height: 10),
                 DropdownButtonFormField2<String>(
                   value: _selectedKategori,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedKategori = value!;
-                    });
-                  },
+                  onChanged: widget.isEditable
+                      ? (value) {
+                          setState(() {
+                            _selectedKategori = value!;
+                          });
+                        }
+                      : null,
                   items: ['individu', 'kelompok'].map((String kategori) {
                     return DropdownMenuItem<String>(
                       value: kategori,
@@ -188,11 +200,13 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
                 SizedBox(height: 10),
                 DropdownButtonFormField2<String>(
                   value: _selectedJuara,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedJuara = value!;
-                    });
-                  },
+                  onChanged: widget.isEditable
+                      ? (value) {
+                          setState(() {
+                            _selectedJuara = value!;
+                          });
+                        }
+                      : null,
                   items: [
                     'Juara 1',
                     'Juara 2',
@@ -216,7 +230,7 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'Pilih gambar dengan ukuran maksimum 2048 MB.',
+                  'Pilih gambar dengan ukuran maksimum 2048 kB.',
                   style: TextStyle(color: Colors.red, fontSize: 12),
                 ),
                 SizedBox(height: 10),
@@ -224,7 +238,7 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
                   context,
                   label: 'Pilih Sertifikat',
                   icon: Icons.photo,
-                  onTap: _pickSertifikatFile,
+                  onTap: widget.isEditable ? _pickSertifikatFile : null,
                 ),
                 SizedBox(height: 10),
                 _buildSertifikatImage(),
@@ -233,7 +247,7 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
                   context,
                   label: 'Pilih Dokumentasi',
                   icon: Icons.photo,
-                  onTap: _pickDokumentasiFile,
+                  onTap: widget.isEditable ? _pickDokumentasiFile : null,
                 ),
                 SizedBox(height: 10),
                 _buildDokumentasiImage(),
@@ -354,7 +368,7 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
   Widget _buildImagePicker(BuildContext context,
       {required String label,
       required IconData icon,
-      required VoidCallback onTap}) {
+      required VoidCallback? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Card(

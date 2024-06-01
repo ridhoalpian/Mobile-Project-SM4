@@ -156,10 +156,23 @@ class _PrestasiPageState extends State<PrestasiPage> {
                                         ),
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 10, vertical: 5),
-                                        child: Text(
-                                          "status: '${prestasi[index]['statusprestasi']}'",
-                                          style: TextStyle(
-                                            color: Colors.black,
+                                        child: RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: 'status: ',
+                                                style: TextStyle(
+                                                    color: Colors.black),
+                                              ),
+                                              TextSpan(
+                                                text: prestasi[index]
+                                                    ['statusprestasi'],
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -167,16 +180,15 @@ class _PrestasiPageState extends State<PrestasiPage> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                PrestasiDetailPage(
-                                                    prestasi: prestasi[index]),
+                                            builder: (context) => PrestasiDetailPage(
+                                              prestasi: prestasi[index],
+                                              isEditable: prestasi[index]['statusprestasi'] != 'disetujui',
+                                            ),
                                           ),
                                         ).then((value) {
-                                          if (value == true &&
-                                              _userId != null) {
+                                          if (value == true && _userId != null) {
                                             setState(() {
-                                              _futurePrestasi =
-                                                  fetchPrestasi(_userId!);
+                                              _futurePrestasi = fetchPrestasi(_userId!);
                                             });
                                           }
                                         });
