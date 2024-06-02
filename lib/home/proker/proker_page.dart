@@ -36,7 +36,8 @@ class _ProkerPageState extends State<ProkerPage> {
         .get(Uri.parse(ApiUtils.buildUrl('api/proker?user_id=$userId')));
 
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      List<dynamic> proker = json.decode(response.body);
+      return proker.reversed.toList();
     } else {
       throw Exception('Failed to load data');
     }
@@ -105,10 +106,14 @@ class _ProkerPageState extends State<ProkerPage> {
                               List<dynamic> proker = snapshot.data!;
                               if (_searchQuery.isNotEmpty) {
                                 proker = proker.where((item) {
-                                  return item['nama_proker']
+                                  final namaProker = item['nama_proker']
                                       .toString()
-                                      .toLowerCase()
-                                      .contains(_searchQuery);
+                                      .toLowerCase();
+                                  final statusProker = item['status_proker']
+                                      .toString()
+                                      .toLowerCase();
+                                  return namaProker.contains(_searchQuery) ||
+                                      statusProker.contains(_searchQuery);
                                 }).toList();
                               }
                               return ListView.builder(
@@ -182,10 +187,22 @@ class _ProkerPageState extends State<ProkerPage> {
                                           MaterialPageRoute(
                                             builder: (context) => ProkerDetail(
                                               proker: proker[index],
-                                              isEditable: proker[index]['statusprestasi'] != 'terkirim' && proker[index]['statusprestasi'] != 'ditolak',
+                                              isEditable: proker[index]
+                                                          ['status_proker'] ==
+                                                      'terkirim' ||
+                                                  proker[index]
+                                                          ['status_proker'] ==
+                                                      'ditolak',
                                             ),
                                           ),
-                                        );
+                                        ).then((value) {
+                                          if (value == true) {
+                                            setState(() {
+                                              _futureProker =
+                                                  fetchProker(_userId);
+                                            });
+                                          }
+                                        });
                                       },
                                     ),
                                   );

@@ -106,10 +106,14 @@ class _PrestasiPageState extends State<PrestasiPage> {
                               List<dynamic> prestasi = snapshot.data!;
                               if (_searchQuery.isNotEmpty) {
                                 prestasi = prestasi.where((item) {
-                                  return item['namalomba']
+                                  final namaLomba = item['namalomba']
                                       .toString()
-                                      .toLowerCase()
-                                      .contains(_searchQuery);
+                                      .toLowerCase();
+                                  final statusPrestasi = item['statusprestasi']
+                                      .toString()
+                                      .toLowerCase();
+                                  return namaLomba.contains(_searchQuery) ||
+                                      statusPrestasi.contains(_searchQuery);
                                 }).toList();
                               }
                               return ListView.builder(

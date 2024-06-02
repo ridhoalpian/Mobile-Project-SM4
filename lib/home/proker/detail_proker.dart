@@ -90,18 +90,20 @@ class _ProkerDetailState extends State<ProkerDetail> {
   }
 
   Future<void> _saveProker() async {
-    final namaProker = _namaProkerController.text;
-    final deskripsiProker = _deskripsiProkerController.text;
-    final penanggungJawab = _penanggungJawabController.text;
-    final periode = _periodeController.text;
+    if (_selectedPdfPath == null) {
+      AnimatedSnackBar.rectangle(
+        'Error',
+        'Pilih lampiran PDF terlebih dahulu',
+        type: AnimatedSnackBarType.error,
+        brightness: Brightness.light,
+        duration: Duration(seconds: 4),
+      ).show(context);
+      return;
+    }
 
-    var url = Uri.parse(
-        ApiUtils.buildUrl('api/update_proker/${widget.proker['id']}'));
-    var request = http.MultipartRequest('POST', url)
-      ..fields['nama_proker'] = namaProker
-      ..fields['uraian_proker'] = deskripsiProker
-      ..fields['penanggung_jawab'] = penanggungJawab
-      ..fields['periode'] = periode.toString();
+    var url =
+        Uri.parse(ApiUtils.buildUrl('api/proker/${widget.proker['idproker']}'));
+    var request = http.MultipartRequest('POST', url);
 
     if (_selectedPdfPath != null) {
       request.files.add(await http.MultipartFile.fromPath(
@@ -116,7 +118,7 @@ class _ProkerDetailState extends State<ProkerDetail> {
     if (response.statusCode == 200) {
       AnimatedSnackBar.rectangle(
         'Success',
-        'Data Proker berhasil disimpan',
+        'Lampiran Proker berhasil diperbarui',
         type: AnimatedSnackBarType.success,
         brightness: Brightness.light,
         duration: Duration(seconds: 4),
@@ -127,7 +129,7 @@ class _ProkerDetailState extends State<ProkerDetail> {
       print('Error: ${response.reasonPhrase}');
       AnimatedSnackBar.rectangle(
         'Error',
-        'Gagal menyimpan data proker',
+        'Gagal memperbarui lampiran proker',
         type: AnimatedSnackBarType.error,
         brightness: Brightness.light,
         duration: Duration(seconds: 4),
@@ -178,14 +180,15 @@ class _ProkerDetailState extends State<ProkerDetail> {
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: _saveProker,
-            child: Text(
-              'Simpan',
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          if (widget.isEditable)
+            TextButton(
+              onPressed: _saveProker,
+              child: Text(
+                'Simpan',
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
         ],
       ),
       body: Padding(
