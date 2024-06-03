@@ -14,7 +14,7 @@ class ProkerPage extends StatefulWidget {
 
 class _ProkerPageState extends State<ProkerPage> {
   late Future<List<dynamic>> _futureProker;
-  late int _userId;
+  int? _userId;
   String _searchQuery = '';
 
   @override
@@ -27,7 +27,9 @@ class _ProkerPageState extends State<ProkerPage> {
     int? userId = await DBHelper.getUserId();
     setState(() {
       _userId = userId!;
-      _futureProker = fetchProker(_userId);
+      if (_userId != null) {
+      _futureProker = fetchProker(_userId!);
+    }
     });
   }
 
@@ -45,7 +47,7 @@ class _ProkerPageState extends State<ProkerPage> {
 
   Future<void> _refreshProker() async {
     setState(() {
-      _futureProker = fetchProker(_userId);
+      _futureProker = fetchProker(_userId!);
     });
   }
 
@@ -199,7 +201,7 @@ class _ProkerPageState extends State<ProkerPage> {
                                           if (value == true) {
                                             setState(() {
                                               _futureProker =
-                                                  fetchProker(_userId);
+                                                  fetchProker(_userId!);
                                             });
                                           }
                                         });
@@ -224,7 +226,7 @@ class _ProkerPageState extends State<ProkerPage> {
               .then((value) {
             if (value == true) {
               setState(() {
-                _futureProker = fetchProker(_userId);
+                _futureProker = fetchProker(_userId!);
               });
             }
           });

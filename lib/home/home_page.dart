@@ -13,18 +13,23 @@ import 'package:projectone/login_register/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
+  final int initialIndex;
+  
+  HomePage({this.initialIndex = 0});
+  
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
   String emailUKM = '';
   String namaUKM = '';
 
   @override
   void initState() {
     super.initState();
+    _selectedIndex = widget.initialIndex;
     _loadProfileData();
   }
 
@@ -81,7 +86,7 @@ class _HomePageState extends State<HomePage> {
   ];
 
   List<Widget> _pages = [
-    DashboarPage(),
+    DashboardPage(),
     PrestasiPage(),
     ProkerPage(),
     KegiatanPage(),
@@ -160,16 +165,17 @@ class _HomePageState extends State<HomePage> {
                         padding: EdgeInsets.all(0),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.white.withOpacity(0.2),
                           border: Border.all(
-                            color: Colors.grey.withOpacity(0.2),
+                            color: Colors.white.withOpacity(0.2),
                             width: 2,
                           ),
                         ),
-                        child: CircleAvatar(
-                          radius: 30,
-                          backgroundImage: NetworkImage(
-                              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJoqKv2TQNEOQRh6CXSrMF5Jhp0mEp95LwPoDHo2bPdY-wsTkzz1ih_LPxcbkH82WUBBk&usqp=CAU'),
+                        child: Image.asset(
+                          'assets/images/logo_polije.png',
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ],

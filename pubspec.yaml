@@ -54,6 +54,7 @@ dependencies:
   path_provider: ^2.0.7
   permission_handler: ^10.2.0
   url_launcher: ^6.0.12
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
@@ -85,6 +86,7 @@ flutter:
   - assets/images/email.png
   - assets/images/lupapassword.png
   - assets/images/passbaru.png
+  - assets/images/logo_polije.png
 
   fonts:
     - family: Montserrat
