@@ -87,6 +87,7 @@ flutter:
   - assets/images/lupapassword.png
   - assets/images/passbaru.png
   - assets/images/logo_polije.png
+  - assets/images/pendanaan_ilustrasi.jpg
 
   fonts:
     - family: Montserrat

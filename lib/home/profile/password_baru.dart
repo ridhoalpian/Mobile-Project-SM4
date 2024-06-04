@@ -46,11 +46,11 @@ class _passwordBaruState extends State<passwordBaru> {
     // Periksa apakah password baru dan konfirmasi password cocok
     if (newPassword != confirmPassword) {
       AnimatedSnackBar.rectangle(
-        'Info',
+        'Warning',
         'Password dan konfirmasi password tidak cocok',
-        type: AnimatedSnackBarType.info,
+        type: AnimatedSnackBarType.warning,
         brightness: Brightness.light,
-        duration: Duration(seconds: 4),
+        duration: Duration(seconds: 6),
       ).show(context);
 
       return;

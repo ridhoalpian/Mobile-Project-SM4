@@ -81,6 +81,7 @@ class _DanaPageState extends State<DanaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: _userId == null
           ? Center(child: CircularProgressIndicator())
           : FutureBuilder<Map<String, dynamic>>(
@@ -95,7 +96,17 @@ class _DanaPageState extends State<DanaPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          SizedBox(height: 10),
+                          Text(
+                            'Infromasi Dana',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24), 
+                          ),
+                          SizedBox(height: 20),
+                          Image.asset(
+                            'assets/images/pendanaan_ilustrasi.jpg',
+                            width: double.infinity,
+                            fit: BoxFit.contain,
+                          ),
+                          SizedBox(height: 20),
                           TextFormField(
                             initialValue: formatRupiah(
                                 snapshot.data!['anggaran_tersedia']),
