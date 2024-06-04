@@ -31,16 +31,16 @@ class _DanaPageState extends State<DanaPage> {
   }
 
   String formatRupiah(dynamic amount) {
-  if (amount == null) {
-    return 'Rp. 0';
+    if (amount == null) {
+      return 'Rp. 0';
+    }
+    // Konversi ke angka jika amount adalah string
+    if (amount is String) {
+      amount = double.tryParse(amount) ?? 0;
+    }
+    final formatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp. ');
+    return formatter.format(amount);
   }
-  // Konversi ke angka jika amount adalah string
-  if (amount is String) {
-    amount = double.tryParse(amount) ?? 0;
-  }
-  final formatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp. ');
-  return formatter.format(amount);
-}
 
   Future<Map<String, dynamic>> fetchPendanaan(int userId) async {
     final response = await http
@@ -101,8 +101,9 @@ class _DanaPageState extends State<DanaPage> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            'Infromasi Dana',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24), 
+                            'Informasi Dana',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 24),
                           ),
                           SizedBox(height: 20),
                           Image.asset(
