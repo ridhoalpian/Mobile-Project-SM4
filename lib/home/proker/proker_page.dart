@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:projectone/database/DBHelper.dart';
 import 'package:projectone/database/apiutils.dart';
 import 'package:projectone/home/proker/detail_proker.dart';
-import 'package:projectone/home/proker/inputproker.dart';
+import 'package:projectone/home/proker/input_proker.dart';
 
 class ProkerPage extends StatefulWidget {
   @override
@@ -232,7 +232,7 @@ class _ProkerPageState extends State<ProkerPage> {
           });
         },
         icon: Icon(
-          Icons.edit,
+          Icons.add,
           color: Colors.black,
         ),
         label: Text('Tambah Proker',

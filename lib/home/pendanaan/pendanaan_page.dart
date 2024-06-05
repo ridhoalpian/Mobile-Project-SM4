@@ -100,16 +100,15 @@ class _DanaPageState extends State<DanaPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text(
-                            'Informasi Dana',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 24),
-                          ),
-                          SizedBox(height: 20),
                           Image.asset(
                             'assets/images/pendanaan_ilustrasi.jpg',
                             width: double.infinity,
                             fit: BoxFit.contain,
+                          ),
+                          Text(
+                            'Informasi Dana:',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18),
                           ),
                           SizedBox(height: 20),
                           TextFormField(

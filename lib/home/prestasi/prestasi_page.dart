@@ -223,12 +223,12 @@ class _PrestasiPageState extends State<PrestasiPage> {
           });
         },
         icon: Icon(
-          Icons.edit,
-          color: Colors.white,
+          Icons.add,
+          color: Colors.black,
         ),
         label: Text('Tambah Prestasi',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.green[600],
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.green[200],
       ),
     );
   }
