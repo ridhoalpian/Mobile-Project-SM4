@@ -113,6 +113,9 @@ class _ProkerDetailState extends State<ProkerDetail> {
       ));
     }
 
+    // Optional: Menambahkan status_proker ke form fields
+    request.fields['status_proker'] = widget.proker['status_proker'];
+
     var response = await http.Response.fromStream(await request.send());
 
     if (response.statusCode == 200) {
@@ -137,14 +140,14 @@ class _ProkerDetailState extends State<ProkerDetail> {
     }
   }
 
-  Widget _buildImagePicker(BuildContext context,
+  Widget _buildButtonDownload(BuildContext context,
       {required String label,
       required IconData icon,
       required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        color: Colors.green[50],
+        color: Colors.orange[50],
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -153,7 +156,7 @@ class _ProkerDetailState extends State<ProkerDetail> {
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              Icon(icon, size: 30, color: Colors.green[400]),
+              Icon(icon, size: 30, color: Colors.orange[400]),
               SizedBox(width: 20),
               Text(
                 label,
@@ -224,11 +227,6 @@ class _ProkerDetailState extends State<ProkerDetail> {
                 ),
               ),
               SizedBox(height: 10),
-              Divider(
-                color: Colors.grey,
-                thickness: 0.2,
-              ),
-              SizedBox(height: 10),
               TextFormField(
                 controller: _periodeController,
                 readOnly: true,
@@ -237,6 +235,12 @@ class _ProkerDetailState extends State<ProkerDetail> {
                   prefixIcon: Icons.date_range,
                 ),
               ),
+              SizedBox(height: 10),
+              if (widget.isEditable)
+                Divider(
+                  color: Colors.grey,
+                  thickness: 0.2,
+                ),
               SizedBox(height: 10),
               Row(
                 children: [
@@ -260,6 +264,28 @@ class _ProkerDetailState extends State<ProkerDetail> {
                     ),
                 ],
               ),
+              SizedBox(height: 10),
+              if (widget.isEditable)
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          WidgetSpan(
+                            child:
+                                Icon(Icons.error, color: Colors.red, size: 16),
+                          ),
+                          TextSpan(
+                            text:
+                                '  Pilih file berformat .pdf dengan ukuran maksimum 2048 kB',
+                            style: TextStyle(color: Colors.red, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               SizedBox(height: 20),
             ],
           ),
@@ -270,16 +296,20 @@ class _ProkerDetailState extends State<ProkerDetail> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildImagePicker(
+            _buildButtonDownload(
               context,
               label: 'Unduh Lampiran',
               icon: Icons.download_rounded,
               onTap: _downloadPdf,
             ),
-            Text(
-              'File PDF yang berhasil diunduh akan masuk kedalam folder Download',
-              style: TextStyle(fontSize: 10),
-              textAlign: TextAlign.center,
+            Wrap(
+              children: [
+                Text(
+                  'File PDF yang berhasil diunduh akan masuk kedalam folder Download',
+                  style: TextStyle(fontSize: 10),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
             SizedBox(height: 20),
           ],

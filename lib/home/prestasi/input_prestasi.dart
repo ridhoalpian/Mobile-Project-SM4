@@ -173,9 +173,25 @@ class _PrestasiFormState extends State<PrestasiForm> {
                     thickness: 0.2, // Ketebalan garis
                   ),
                   SizedBox(height: 10),
-                  Text(
-                    'Unggah gambar dengan ukuran maksimum 2048 kB',
-                    style: TextStyle(color: Colors.red, fontSize: 12),
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            WidgetSpan(
+                              child: Icon(Icons.error,
+                                  color: Colors.red, size: 16),
+                            ),
+                            TextSpan(
+                              text:
+                                  '  Pilih gambar dengan ukuran maksimum 2048 kB',
+                              style: TextStyle(color: Colors.red, fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 10),
                   _buildImagePicker(
@@ -302,12 +318,12 @@ class _PrestasiFormState extends State<PrestasiForm> {
       Navigator.pop(context, true);
     } else {
       AnimatedSnackBar.rectangle(
-          'Error',
-          'Gagal menyimpan data',
-          type: AnimatedSnackBarType.error,
-          brightness: Brightness.light,
-          duration: Duration(seconds: 4),
-        ).show(context);
+        'Error',
+        'Gagal menyimpan data prestasi',
+        type: AnimatedSnackBarType.error,
+        brightness: Brightness.light,
+        duration: Duration(seconds: 4),
+      ).show(context);
     }
   }
 

@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:projectone/database/apiutils.dart';
 import 'package:projectone/home/kegiatan/detail_kegiatan.dart';
+import 'package:projectone/home/kegiatan/input_kegiatan.dart';
 
 class KegiatanPage extends StatefulWidget {
   @override
@@ -12,7 +13,7 @@ class KegiatanPage extends StatefulWidget {
 }
 
 class _KegiatanPageState extends State<KegiatanPage> {
-  late Future<List<dynamic>> _futureKegiatan;
+  late Future<List<dynamic>> _futureKegiatan = Future.value([]); // Initialize with an empty future
   String _searchQuery = '';
   int? _userId;
 
@@ -24,18 +25,21 @@ class _KegiatanPageState extends State<KegiatanPage> {
 
   Future<void> _initializeUserId() async {
     int? userId = await DBHelper.getUserId();
-    setState(() {
-      _userId = userId;
-      if (_userId != null) {
+    if (userId != null) {
+      setState(() {
+        _userId = userId;
         _futureKegiatan = fetchKegiatan(_userId!);
-      } else {
+      });
+    } else {
+      setState(() {
         _futureKegiatan = Future.error('User ID is null');
-      }
-    });
+      });
+    }
   }
 
   Future<List<dynamic>> fetchKegiatan(int userId) async {
-    final response = await http.get(Uri.parse(ApiUtils.buildUrl('api/kegiatan/$userId')));
+    final response =
+        await http.get(Uri.parse(ApiUtils.buildUrl('api/kegiatan/$userId')));
 
     if (response.statusCode == 200) {
       List<dynamic> kegiatan = json.decode(response.body);
@@ -51,7 +55,9 @@ class _KegiatanPageState extends State<KegiatanPage> {
         _futureKegiatan = fetchKegiatan(_userId!);
       });
     } else {
-      _futureKegiatan = Future.error('User ID is null');
+      setState(() {
+        _futureKegiatan = Future.error('User ID is null');
+      });
     }
   }
 
@@ -106,8 +112,11 @@ class _KegiatanPageState extends State<KegiatanPage> {
                         List<dynamic> kegiatan = snapshot.data!;
                         if (_searchQuery.isNotEmpty) {
                           kegiatan = kegiatan.where((item) {
-                            final namakegiatan = item['nama_kegiatan'].toString().toLowerCase();
-                            final penanggungjawab = item['penanggung_jawab'].toString().toLowerCase();
+                            final namakegiatan =
+                                item['nama_kegiatan'].toString().toLowerCase();
+                            final penanggungjawab = item['status_kegiatan']
+                                .toString()
+                                .toLowerCase();
                             return namakegiatan.contains(_searchQuery) ||
                                 penanggungjawab.contains(_searchQuery);
                           }).toList();
@@ -124,15 +133,18 @@ class _KegiatanPageState extends State<KegiatanPage> {
                                     borderRadius: BorderRadius.circular(10),
                                     color: Colors.cyan[50],
                                   ),
-                                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                                  child: Icon(Icons.calendar_month_rounded, size: 30, color: Colors.cyan),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 5),
+                                  child: Icon(Icons.calendar_month_rounded,
+                                      size: 30, color: Colors.cyan),
                                 ),
                                 title: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
                                     color: Colors.cyan[200],
                                   ),
-                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
                                   child: Text(
                                     kegiatan[index]['nama_kegiatan'],
                                     style: TextStyle(
@@ -146,16 +158,18 @@ class _KegiatanPageState extends State<KegiatanPage> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
                                   child: RichText(
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: 'PJ: ',
+                                          text: 'Status: ',
                                           style: TextStyle(color: Colors.black),
                                         ),
                                         TextSpan(
-                                          text: kegiatan[index]['penanggung_jawab'],
+                                          text: kegiatan[index]
+                                              ['status_kegiatan'],
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold,
@@ -166,21 +180,28 @@ class _KegiatanPageState extends State<KegiatanPage> {
                                   ),
                                 ),
                                 onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => detailKegiatan(
-                                              kegiatan: kegiatan[index],
-                                            ),
-                                          ),
-                                        ).then((value) {
-                                          if (value == true && _userId != null) {
-                                            setState(() {
-                                              _futureKegiatan = fetchKegiatan(_userId!);
-                                            });
-                                          }
-                                        });
-                                      },
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => detailKegiatan(
+                                        kegiatan: kegiatan[index],
+                                        isEditable: kegiatan[index]['status_kegiatan'] ==
+                                                'terkirim' ||
+                                            kegiatan[index]['status_kegiatan'] ==
+                                                'revisibem' ||
+                                            kegiatan[index]['status_kegiatan'] ==
+                                                'revisikemahasiswaan',
+                                      ),
+                                    ),
+                                  ).then((value) {
+                                    if (value == true && _userId != null) {
+                                      setState(() {
+                                        _futureKegiatan =
+                                            fetchKegiatan(_userId!);
+                                      });
+                                    }
+                                  });
+                                },
                               ),
                             );
                           },
@@ -196,7 +217,15 @@ class _KegiatanPageState extends State<KegiatanPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Implementasi ketika tombol tambah kegiatan ditekan
+          Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => InputKegiatan(userId: _userId!)))
+              .then((value) {
+            if (value == true && _userId != null) {
+              setState(() {
+                _futureKegiatan = fetchKegiatan(_userId!);
+              });
+            }
+          });
         },
         icon: Icon(Icons.add, color: Colors.black),
         label: Text(

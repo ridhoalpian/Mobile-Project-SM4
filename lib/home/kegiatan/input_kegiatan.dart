@@ -1,30 +1,66 @@
-import 'package:flutter/material.dart';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class pengajuanKegiatan extends StatefulWidget {
+import 'package:projectone/database/apiutils.dart';
+
+class InputKegiatan extends StatefulWidget {
+  final int userId;
+
+  InputKegiatan({required this.userId});
+
   @override
-  _pengajuanKegiatanState createState() => _pengajuanKegiatanState();
+  _InputKegiatanState createState() => _InputKegiatanState();
 }
 
-class _pengajuanKegiatanState extends State<pengajuanKegiatan> {
-  final List<String> genderItems = [
-    'Proker 1',
-    'Proker 2',
-    'Proker 3',
-    'Proker 4',
-  ];
+class _InputKegiatanState extends State<InputKegiatan> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String? selectedValue;
+  final TextEditingController _namaKegiatanController = TextEditingController();
+  final TextEditingController _penanggungJawabController =
+      TextEditingController();
+  final TextEditingController _pengajuanDanaController =
+      TextEditingController();
+  String? _selectedProker;
+  String? _selectedFile;
 
-  OutlineInputBorder _outlineInputBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(15),
-    borderSide: BorderSide(color: Colors.grey), // Warna border default
-  );
+  List<Map<String, dynamic>> prokerItems = [];
+  @override
+  void initState() {
+    super.initState();
+    _fetchProkerData();
+  }
 
-  OutlineInputBorder _focusedBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(15),
-    borderSide: BorderSide(color: Colors.grey), // Warna border saat diklik
-  );
+  int _getCurrentYear() {
+    return DateTime.now().year;
+  }
+
+  Future<void> _fetchProkerData() async {
+    final response = await http.get(
+        Uri.parse(ApiUtils.buildUrl('api/proker?user_id=${widget.userId}')));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as List;
+      setState(() {
+        prokerItems = data
+            .map((item) => {
+                  'idproker': item['idproker'],
+                  'nama_proker': item['nama_proker'],
+                })
+            .toList();
+      });
+    } else {
+      AnimatedSnackBar.rectangle(
+        'Error',
+        'Gagal mengambil data proker',
+        type: AnimatedSnackBarType.error,
+        brightness: Brightness.light,
+        duration: Duration(seconds: 4),
+      ).show(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,217 +68,262 @@ class _pengajuanKegiatanState extends State<pengajuanKegiatan> {
       appBar: AppBar(
         title: Text('Input Pengajuan Kegiatan',
             style: TextStyle(fontWeight: FontWeight.bold)),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: Container(
+            color: Colors.grey,
+            height: 0.2,
+          ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              if (_formKey.currentState?.validate() ?? false) {
+                _submitForm();
+              }
+            },
+            child: Text(
+              'Simpan',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Untuk pengajuan kegiatan harus sudah terdapat tanda tangan pembina ormawa atau BEM',
-              style: TextStyle(fontSize: 14, color: Colors.red),
-            ),
-            SizedBox(height: 10),
-            Divider(
-              color: Colors.black12,
-              thickness: 1,
-            ),
-            SizedBox(height: 10),
-            DropdownButtonFormField2<String>(
-              decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.work),
-                  border: _outlineInputBorder,
-                  focusedBorder: _focusedBorder,
-                  hintText: 'Pilih Proker'),
-              items: genderItems
-                  .map((item) => DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(
-                          item,
-                        ),
-                      ))
-                  .toList(),
-              validator: (value) {
-                if (value == null) {
-                  return 'Anda belum memilih Proker';
-                }
-                return null;
-              },
-              onChanged: (value) {
-                //Do something when selected item is changed.
-              },
-              onSaved: (value) {
-                selectedValue = value.toString();
-              },
-              iconStyleData: const IconStyleData(
-                icon: Icon(
-                  Icons.arrow_drop_down,
-                  color: Colors.black45,
-                ),
-                iconSize: 24,
-              ),
-              dropdownStyleData: DropdownStyleData(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Nama Kegiatan',
-                border: _outlineInputBorder,
-                focusedBorder: _focusedBorder,
-                prefixIcon: Icon(
-                  Icons.event,
-                ),
-                labelStyle: TextStyle(),
-              ),
-            ),
-            SizedBox(height: 10),
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Penanggung Jawab',
-                border: _outlineInputBorder,
-                focusedBorder: _focusedBorder,
-                prefixIcon: Icon(
-                  Icons.person,
-                ),
-                labelStyle: TextStyle(),
-              ),
-            ),
-            SizedBox(height: 10),
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Periode',
-                border: _outlineInputBorder,
-                focusedBorder: _focusedBorder,
-                prefixIcon: Icon(
-                  Icons.calendar_today,
-                ),
-                labelStyle: TextStyle(),
-              ),
-            ),
-            SizedBox(height: 20),
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Pengajuan Dana',
-                border: _outlineInputBorder,
-                focusedBorder: _focusedBorder,
-                prefixIcon: Icon(
-                  Icons.attach_money,
-                ),
-                labelStyle: TextStyle(),
-              ),
-            ),
-            SizedBox(height: 10),
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Lampiran LPJ',
-                border: _outlineInputBorder,
-                focusedBorder: _focusedBorder,
-                suffixIcon: InkWell(
-                  onTap: () {
-                    _openFilePicker(context);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    child: Icon(
-                      Icons.attach_file,
-                    ),
-                  ),
-                ),
-                prefixIcon: Icon(
-                  Icons.description,
-                ),
-                labelStyle: TextStyle(),
-              ),
-              readOnly: true,
-              onTap: () {
-                _openFilePicker(context);
-              },
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.white,
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      side: BorderSide(color: Colors.green[400]!, width: 2),
-                    ),
-                  ),
-                  child: Container(
-                    constraints: BoxConstraints(minWidth: 88, minHeight: 44),
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  RichText(
+                    text: TextSpan(
                       children: [
-                        Icon(Icons.delete, color: Colors.black54),
-                        SizedBox(width: 8),
-                        Text(
-                          "Hapus",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Montserrat',
-                          ),
+                        // WidgetSpan(
+                        //   child: Icon(Icons.error, color: Colors.red, size: 16),
+                        // ),
+                        TextSpan(
+                          text:
+                              'Untuk pengajuan kegiatan harus sudah terdapat tanda tangan pembina Ormawa atau BEM',
+                          style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
                   ),
+                ],
+              ),
+              SizedBox(height: 5),
+              Divider(
+                color: Colors.grey,
+                thickness: 0.2,
+              ),
+              SizedBox(height: 10),
+              DropdownButtonFormField2<String>(
+                decoration: _buildInputDecoration(
+                  labelText: 'Pilih Proker',
+                  prefixIcon: Icons.work,
                 ),
-                SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.green[400],
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                items: prokerItems.map((item) {
+                  return DropdownMenuItem<String>(
+                    value: item['idproker'].toString(),
+                    child: Text('${item['idproker']}. ${item['nama_proker']}'),
+                  );
+                }).toList(),
+                validator: (value) =>
+                    value == null ? 'Anda belum memilih Proker' : null,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedProker = value;
+                  });
+                },
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                controller: _namaKegiatanController,
+                decoration: _buildInputDecoration(
+                  labelText: 'Nama Kegiatan',
+                  prefixIcon: Icons.event,
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Nama Kegiatan wajib diisi'
+                    : null,
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                controller: _penanggungJawabController,
+                decoration: _buildInputDecoration(
+                  labelText: 'Penanggung Jawab',
+                  prefixIcon: Icons.person,
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Penanggung Jawab wajib diisi'
+                    : null,
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                decoration: _buildInputDecoration(
+                  labelText: 'Periode',
+                  prefixIcon: Icons.calendar_today,
+                ),
+                initialValue: _getCurrentYear().toString(),
+                readOnly: true,
+              ),
+              SizedBox(height: 10),
+              Divider(
+                color: Colors.grey,
+                thickness: 0.2,
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                controller: _pengajuanDanaController,
+                decoration: _buildInputDecoration(
+                  labelText: 'Pengajuan Dana',
+                  prefixIcon: Icons.attach_money,
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Pengajuan Dana wajib diisi'
+                    : null,
+              ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      decoration: _buildInputDecoration(
+                        labelText: 'Proposal Kegiatan',
+                        prefixIcon: Icons.description,
+                      ),
+                      readOnly: true,
+                      controller: TextEditingController(text: _selectedFile),
+                      onTap: _openFilePicker,
                     ),
                   ),
-                  child: Container(
-                    constraints: BoxConstraints(minWidth: 88, minHeight: 44),
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                  IconButton(
+                    icon: Icon(Icons.attach_file),
+                    onPressed: _openFilePicker,
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  RichText(
+                    text: TextSpan(
                       children: [
-                        Icon(Icons.send, color: Colors.white),
-                        SizedBox(width: 8),
-                        Text(
-                          "Kirim",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Montserrat',
-                          ),
+                        WidgetSpan(
+                          child: Icon(Icons.error, color: Colors.red, size: 16),
+                        ),
+                        TextSpan(
+                          text:
+                              '  Pilih file berformat .pdf dengan ukuran maksimum 2048 kB',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void _openFilePicker(BuildContext context) {
-    // Open file picker dialog or navigator
+  InputDecoration _buildInputDecoration(
+      {String? labelText, IconData? prefixIcon}) {
+    return InputDecoration(
+      labelText: labelText,
+      labelStyle: TextStyle(color: Colors.grey),
+      border: InputBorder.none,
+      filled: true,
+      fillColor: Colors.grey[200],
+      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
+        borderSide: BorderSide(color: Colors.transparent),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
+        borderSide: BorderSide(color: Colors.transparent),
+      ),
+      prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+    );
+  }
+
+  Future<void> _openFilePicker() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      setState(() {
+        _selectedFile = result.files.single.path!;
+      });
+    }
+  }
+
+  Future<void> _submitForm() async {
+    final userId = widget.userId;
+    final periode = _getCurrentYear();
+
+    // ignore: unnecessary_null_comparison
+    if (userId == null) {
+      AnimatedSnackBar.rectangle(
+        'Error',
+        'User ID tidak ditemukan',
+        type: AnimatedSnackBarType.error,
+        brightness: Brightness.light,
+        duration: Duration(seconds: 4),
+      ).show(context);
+      return;
+    }
+
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    final uri = Uri.parse(ApiUtils.buildUrl('api/kegiatan'));
+    final request = http.MultipartRequest('POST', uri);
+
+    request.fields['nama_kegiatan'] = _namaKegiatanController.text;
+    request.fields['penanggung_jawab'] = _penanggungJawabController.text;
+    request.fields['pengajuan_dana'] = _pengajuanDanaController.text;
+    request.fields['periode'] = periode.toString();
+    request.fields['proker_id'] = _selectedProker!;
+    request.fields['user_id'] = userId.toString();
+
+    if (_selectedFile != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+          'proposal_kegiatan', _selectedFile!));
+    }
+
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      AnimatedSnackBar.rectangle(
+        'Success',
+        'Data kegiatan berhasil disimpan',
+        type: AnimatedSnackBarType.success,
+        brightness: Brightness.light,
+        duration: Duration(seconds: 4),
+      ).show(context);
+      Navigator.pop(context, true);
+    } else {
+      AnimatedSnackBar.rectangle(
+        'Error',
+        'Gagal menyimpan data kegiatan',
+        type: AnimatedSnackBarType.error,
+        brightness: Brightness.light,
+        duration: Duration(seconds: 4),
+      ).show(context);
+    }
   }
 }

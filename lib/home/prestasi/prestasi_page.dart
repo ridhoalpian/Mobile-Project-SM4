@@ -112,8 +112,11 @@ class _PrestasiPageState extends State<PrestasiPage> {
                                   final statusPrestasi = item['statusprestasi']
                                       .toString()
                                       .toLowerCase();
+                                  final juara =
+                                      item['juara'].toString().toLowerCase();
                                   return namaLomba.contains(_searchQuery) ||
-                                      statusPrestasi.contains(_searchQuery);
+                                      statusPrestasi.contains(_searchQuery) ||
+                                      juara.contains(_searchQuery);
                                 }).toList();
                               }
                               return ListView.builder(
@@ -184,15 +187,20 @@ class _PrestasiPageState extends State<PrestasiPage> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => PrestasiDetailPage(
+                                            builder: (context) =>
+                                                PrestasiDetailPage(
                                               prestasi: prestasi[index],
-                                              isEditable: prestasi[index]['statusprestasi'] != 'disetujui',
+                                              isEditable: prestasi[index]
+                                                      ['statusprestasi'] !=
+                                                  'disetujui',
                                             ),
                                           ),
                                         ).then((value) {
-                                          if (value == true && _userId != null) {
+                                          if (value == true &&
+                                              _userId != null) {
                                             setState(() {
-                                              _futurePrestasi = fetchPrestasi(_userId!);
+                                              _futurePrestasi =
+                                                  fetchPrestasi(_userId!);
                                             });
                                           }
                                         });

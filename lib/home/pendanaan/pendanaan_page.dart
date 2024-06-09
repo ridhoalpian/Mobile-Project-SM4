@@ -34,7 +34,6 @@ class _DanaPageState extends State<DanaPage> {
     if (amount == null) {
       return 'Rp. 0';
     }
-    // Konversi ke angka jika amount adalah string
     if (amount is String) {
       amount = double.tryParse(amount) ?? 0;
     }

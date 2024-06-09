@@ -194,7 +194,7 @@ class _ProkerPageState extends State<ProkerPage> {
                                                       'terkirim' ||
                                                   proker[index]
                                                           ['status_proker'] ==
-                                                      'ditolak',
+                                                      'revisi',
                                             ),
                                           ),
                                         ).then((value) {

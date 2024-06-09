@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:projectone/database/apiutils.dart';
 import 'package:projectone/home/lpj/detail_lpj.dart';
+import 'package:projectone/home/lpj/input_lpj.dart';
 
 class LpjPage extends StatefulWidget {
   @override
@@ -29,7 +30,6 @@ class _LpjPageState extends State<LpjPage> {
       if (_userId != null) {
         _futureLpj = fetchLpj(_userId!);
       } else {
-        // Handle null userId here, for example:
         _futureLpj = Future.error('User ID is null');
       }
     });
@@ -53,7 +53,6 @@ class _LpjPageState extends State<LpjPage> {
         _futureLpj = fetchLpj(_userId!);
       });
     } else {
-      // Handle null userId here, for example:
       _futureLpj = Future.error('User ID is null');
     }
   }
@@ -179,10 +178,21 @@ class _LpjPageState extends State<LpjPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          detailLPJ(lpj: lpj[index]),
+                                      builder: (context) => detailLPJ(
+                                        lpj: lpj[index],
+                                        isEditable: lpj[index]['status_lpj'] ==
+                                                'terkirim' ||
+                                            lpj[index]['status_lpj'] ==
+                                                'revisi',
+                                      ),
                                     ),
-                                  );
+                                  ).then((value) {
+                                    if (value == true && _userId != null) {
+                                      setState(() {
+                                        _futureLpj = fetchLpj(_userId!);
+                                      });
+                                    }
+                                  });
                                 },
                               ),
                             );
@@ -199,7 +209,17 @@ class _LpjPageState extends State<LpjPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Implementasikan aksi ketika tombol tambah LPJ ditekan, misalnya navigasi ke halaman input LPJ
+          Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => InputLPJ(userId: _userId!)))
+              .then((value) {
+            if (value == true && _userId != null) {
+              setState(() {
+                _futureLpj = fetchLpj(_userId!);
+              });
+            }
+          });
         },
         icon: Icon(Icons.add, color: Colors.black),
         label: Text('Tambah LPJ',

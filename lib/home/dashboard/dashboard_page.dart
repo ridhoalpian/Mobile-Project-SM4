@@ -14,6 +14,7 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   int prestasiCount = 0;
   int prokerCount = 0;
+  int kegiatanCount = 0;
   bool isLoading = true;
   int? _userId;
 
@@ -48,6 +49,7 @@ class _DashboardPageState extends State<DashboardPage> {
         setState(() {
           prestasiCount = data['prestasi_count'];
           prokerCount = data['proker_count'];
+          kegiatanCount = data['kegiatan_count'];
           isLoading = false;
         });
       } else {
@@ -107,7 +109,6 @@ class _DashboardPageState extends State<DashboardPage> {
                                     HomePage(initialIndex: 2)),
                           );
                         } else {
-                          // Handle when _userId is not initialized
                           print("User ID is not initialized");
                         }
                       },
@@ -118,9 +119,18 @@ class _DashboardPageState extends State<DashboardPage> {
                       color: Colors.cyan,
                       title: 'Kegiatan',
                       subtitle:
-                          'Jumlah Kegiatan 0', // Update jumlah kegiatan sesuai kebutuhan
+                          'Jumlah Kegiatan $kegiatanCount',
                       onTap: () {
-                        // Handle tap
+                        if (_userId != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    HomePage(initialIndex: 3)),
+                          );
+                        } else {
+                          print("User ID is not initialized");
+                        }
                       },
                     ),
                   ],

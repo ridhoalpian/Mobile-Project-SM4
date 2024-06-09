@@ -1,3 +1,4 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:projectone/database/DBHelper.dart';
@@ -25,91 +26,12 @@ class _InputProkerState extends State<InputProker> {
     _loadUserId();
   }
 
-  int _getCurrentYear() {
-    return DateTime.now().year;
-  }
-
-  Future<void> _openFilePicker() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
-    );
-
-    if (result != null && result.files.single.path != null) {
-      setState(() {
-        _selectedFile = result.files.single.path!;
-      });
-    }
-  }
-
-  Future<void> _saveProker() async {
-    if (_userId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('User ID tidak ditemukan'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    final namaProker = _namaProkerController.text;
-    final deskripsiProker = _deskripsiProkerController.text;
-    final penanggungJawab = _penanggungJawabController.text;
-    final periode = _getCurrentYear();
-
-    var url = Uri.parse(ApiUtils.buildUrl('api/proker'));
-    var request = http.MultipartRequest('POST', url)
-      ..fields['user_id'] = _userId.toString()
-      ..fields['nama_proker'] = namaProker
-      ..fields['uraian_proker'] = deskripsiProker
-      ..fields['penanggung_jawab'] = penanggungJawab
-      ..fields['periode'] = periode.toString();
-
-    if (_selectedFile != null) {
-      request.files.add(await http.MultipartFile.fromPath(
-        'lampiran_proker', _selectedFile!,
-        contentType: MediaType('application', 'pdf'),
-      ));
-    }
-
-    var response = await http.Response.fromStream(await request.send());
-
-    if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Data proker berhasil disimpan'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      Navigator.pop(context, true);
-    } else {
-      print('Error: ${response.reasonPhrase}');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Gagal menyimpan data proker: ${response.reasonPhrase}'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
-  Future<void> _loadUserId() async {
-    int? userId = await DBHelper.getUserId();
-    setState(() {
-      _userId = userId;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Input Proker', style: TextStyle(fontWeight: FontWeight.bold)),
+        title:
+            Text('Input Proker', style: TextStyle(fontWeight: FontWeight.bold)),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1.0),
           child: Container(
@@ -126,7 +48,8 @@ class _InputProkerState extends State<InputProker> {
             },
             child: Text(
               'Simpan',
-              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -177,11 +100,6 @@ class _InputProkerState extends State<InputProker> {
                     },
                   ),
                   SizedBox(height: 10),
-                  Divider(
-                    color: Colors.grey,
-                    thickness: 0.2,
-                  ),
-                  SizedBox(height: 10),
                   TextFormField(
                     decoration: _buildInputDecoration(
                       labelText: 'Periode',
@@ -189,6 +107,11 @@ class _InputProkerState extends State<InputProker> {
                     ),
                     initialValue: _getCurrentYear().toString(),
                     readOnly: true,
+                  ),
+                  SizedBox(height: 10),
+                  Divider(
+                    color: Colors.grey,
+                    thickness: 0.2,
                   ),
                   SizedBox(height: 10),
                   Row(
@@ -200,13 +123,35 @@ class _InputProkerState extends State<InputProker> {
                             prefixIcon: Icons.description,
                           ),
                           readOnly: true,
-                          controller: TextEditingController(text: _selectedFile),
+                          controller:
+                              TextEditingController(text: _selectedFile),
                           onTap: _openFilePicker,
                         ),
                       ),
                       IconButton(
                         icon: Icon(Icons.attach_file),
                         onPressed: _openFilePicker,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            WidgetSpan(
+                              child: Icon(Icons.error,
+                                  color: Colors.red, size: 16),
+                            ),
+                            TextSpan(
+                              text:
+                                  '  Pilih file berformat .pdf dengan ukuran maksimum 2048 kB',
+                              style: TextStyle(color: Colors.red, fontSize: 12),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -220,7 +165,91 @@ class _InputProkerState extends State<InputProker> {
     );
   }
 
-  InputDecoration _buildInputDecoration({String? labelText, IconData? prefixIcon}) {
+  int _getCurrentYear() {
+    return DateTime.now().year;
+  }
+
+  Future<void> _openFilePicker() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      setState(() {
+        _selectedFile = result.files.single.path!;
+      });
+    }
+  }
+
+  Future<void> _saveProker() async {
+    if (_userId == null) {
+      AnimatedSnackBar.rectangle(
+        'Error',
+        'User ID tidak ditemukan',
+        type: AnimatedSnackBarType.error,
+        brightness: Brightness.light,
+        duration: Duration(seconds: 4),
+      ).show(context);
+      return;
+    }
+
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    final namaProker = _namaProkerController.text;
+    final deskripsiProker = _deskripsiProkerController.text;
+    final penanggungJawab = _penanggungJawabController.text;
+    final periode = _getCurrentYear();
+
+    var url = Uri.parse(ApiUtils.buildUrl('api/proker'));
+    var request = http.MultipartRequest('POST', url)
+      ..fields['user_id'] = _userId.toString()
+      ..fields['nama_proker'] = namaProker
+      ..fields['uraian_proker'] = deskripsiProker
+      ..fields['penanggung_jawab'] = penanggungJawab
+      ..fields['periode'] = periode.toString();
+
+    if (_selectedFile != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'lampiran_proker',
+        _selectedFile!,
+        contentType: MediaType('application', 'pdf'),
+      ));
+    }
+
+    var response = await http.Response.fromStream(await request.send());
+
+    if (response.statusCode == 200) {
+      AnimatedSnackBar.rectangle(
+        'Success',
+        'Data proker berhasil disimpan',
+        type: AnimatedSnackBarType.success,
+        brightness: Brightness.light,
+        duration: Duration(seconds: 4),
+      ).show(context);
+      Navigator.pop(context, true);
+    } else {
+      AnimatedSnackBar.rectangle(
+        'Error',
+        'Gagal menyimpan data proker',
+        type: AnimatedSnackBarType.error,
+        brightness: Brightness.light,
+        duration: Duration(seconds: 4),
+      ).show(context);
+    }
+  }
+
+  Future<void> _loadUserId() async {
+    int? userId = await DBHelper.getUserId();
+    setState(() {
+      _userId = userId;
+    });
+  }
+
+  InputDecoration _buildInputDecoration(
+      {String? labelText, IconData? prefixIcon}) {
     return InputDecoration(
       labelText: labelText,
       labelStyle: TextStyle(color: Colors.grey),

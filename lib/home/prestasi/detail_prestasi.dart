@@ -21,6 +21,7 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
   late TextEditingController _namaLombaController;
   late TextEditingController _tanggalLombaController;
   late TextEditingController _penyelenggaraController;
+  late TextEditingController _note;
   File? _sertifikatFile;
   File? _dokumentasiFile;
   final ImagePicker _picker = ImagePicker();
@@ -38,6 +39,7 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
         TextEditingController(text: widget.prestasi['tanggallomba']);
     _penyelenggaraController =
         TextEditingController(text: widget.prestasi['penyelenggara']);
+    _note = TextEditingController(text: widget.prestasi['note']);
 
     _selectedKategori = widget.prestasi['kategorilomba'];
     _selectedJuara = widget.prestasi['juara'];
@@ -49,6 +51,7 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
     _namaLombaController.dispose();
     _tanggalLombaController.dispose();
     _penyelenggaraController.dispose();
+    _note.dispose();
     super.dispose();
   }
 
@@ -223,17 +226,53 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
                   decoration: _buildDropDownDecoration(
                       labelText: 'Juara', prefixIcon: Icons.emoji_events),
                 ),
+                if (widget.isEditable)
+                SizedBox(height: 10),
+                if (widget.isEditable)
+                Divider(
+                  color: Colors.grey, // Warna garis
+                  thickness: 0.2, // Ketebalan garis
+                ),
+                if (widget.isEditable)
+                SizedBox(height: 10),
+                if (widget.isEditable)
+                TextFormField(
+                  controller: _note,
+                  readOnly: true,
+                  decoration: _buildDropDownDecoration(
+                      labelText: 'Catatan', prefixIcon: Icons.error_rounded),
+                ),
                 SizedBox(height: 10),
                 Divider(
                   color: Colors.grey, // Warna garis
                   thickness: 0.2, // Ketebalan garis
                 ),
+                if (widget.isEditable)
+                SizedBox(height: 5),
+                if (widget.isEditable)
+                Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            WidgetSpan(
+                              child: Icon(Icons.error,
+                                  color: Colors.red, size: 16),
+                            ),
+                            TextSpan(
+                              text:
+                                  '  Pilih gambar dengan ukuran maksimum 2048 kB',
+                              style: TextStyle(color: Colors.red, fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                if (widget.isEditable)
                 SizedBox(height: 10),
-                Text(
-                  'Pilih gambar dengan ukuran maksimum 2048 kB.',
-                  style: TextStyle(color: Colors.red, fontSize: 12),
-                ),
-                SizedBox(height: 10),
+                if (widget.isEditable)
                 _buildImagePicker(
                   context,
                   label: 'Pilih Sertifikat',
@@ -243,6 +282,7 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
                 SizedBox(height: 10),
                 _buildSertifikatImage(),
                 SizedBox(height: 10),
+                if (widget.isEditable)
                 _buildImagePicker(
                   context,
                   label: 'Pilih Dokumentasi',
@@ -271,8 +311,7 @@ class _PrestasiDetailPageState extends State<PrestasiDetailPage> {
         ..fields['tanggallomba'] = _tanggalLombaController.text
         ..fields['juara'] = _selectedJuara
         ..fields['penyelenggara'] = _penyelenggaraController.text
-        ..fields['lingkup'] = _selectedLingkup
-        ..fields['statusprestasi'] = widget.prestasi['statusprestasi'];
+        ..fields['lingkup'] = _selectedLingkup;
 
       if (_sertifikatFile != null) {
         request.files.add(await http.MultipartFile.fromPath(
