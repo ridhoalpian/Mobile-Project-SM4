@@ -21,6 +21,7 @@ class _InputLPJState extends State<InputLPJ> {
 
   String? _selectedProker;
   String? _selectedFile;
+  String? _selectedFileName;
 
   List<Map<String, dynamic>> prokerItems = [];
 
@@ -120,7 +121,7 @@ class _InputLPJState extends State<InputLPJ> {
                             prefixIcon: Icons.description,
                           ),
                           readOnly: true,
-                          controller: TextEditingController(text: _selectedFile),
+                          controller: TextEditingController(text: _selectedFileName),
                           onTap: _openFilePicker,
                           validator: (value) =>
                               value == null || value.isEmpty ? 'Lampiran LPJ diperlukan' : null,
@@ -224,6 +225,7 @@ class _InputLPJState extends State<InputLPJ> {
     if (result != null && result.files.single.path != null) {
       setState(() {
         _selectedFile = result.files.single.path!;
+        _selectedFileName = result.files.single.name;
       });
     }
   }

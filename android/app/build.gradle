@@ -26,7 +26,7 @@ android {
     ndkVersion "25.1.8937393"
 
     namespace "com.example.projectone"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion localProperties.getProperty('flutter.compileSdkVersion', '34').toInteger()
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -43,8 +43,8 @@ android {
 
     defaultConfig {
         applicationId "com.example.projectone"
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion localProperties.getProperty('flutter.minSdkVersion', '21').toInteger()
+        targetSdkVersion localProperties.getProperty('flutter.targetSdkVersion', '34').toInteger()
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

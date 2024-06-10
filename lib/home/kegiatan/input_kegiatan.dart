@@ -26,6 +26,7 @@ class _InputKegiatanState extends State<InputKegiatan> {
       TextEditingController();
   String? _selectedProker;
   String? _selectedFile;
+  String? _selectedFileName;
 
   List<Map<String, dynamic>> prokerItems = [];
   @override
@@ -198,7 +199,7 @@ class _InputKegiatanState extends State<InputKegiatan> {
                         prefixIcon: Icons.description,
                       ),
                       readOnly: true,
-                      controller: TextEditingController(text: _selectedFile),
+                      controller: TextEditingController(text: _selectedFileName),
                       onTap: _openFilePicker,
                     ),
                   ),
@@ -266,6 +267,7 @@ class _InputKegiatanState extends State<InputKegiatan> {
     if (result != null && result.files.single.path != null) {
       setState(() {
         _selectedFile = result.files.single.path!;
+        _selectedFileName = result.files.single.name;
       });
     }
   }

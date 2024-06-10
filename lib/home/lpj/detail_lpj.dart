@@ -27,6 +27,7 @@ class _DetailLPJState extends State<detailLPJ> {
   final TextEditingController _periodeController = TextEditingController();
   final TextEditingController _statusLPJController = TextEditingController();
   String? _selectedPdfPath;
+  String? _selectedFileName;
 
   @override
   void initState() {
@@ -83,6 +84,7 @@ class _DetailLPJState extends State<detailLPJ> {
     if (result != null && result.files.single.path != null) {
       setState(() {
         _selectedPdfPath = result.files.single.path!;
+        _selectedFileName = result.files.single.name;
       });
     }
   }
@@ -255,7 +257,7 @@ class _DetailLPJState extends State<detailLPJ> {
                         prefixIcon: Icons.description,
                       ),
                       readOnly: true,
-                      controller: TextEditingController(text: _selectedPdfPath),
+                      controller: TextEditingController(text: _selectedFileName),
                       onTap: _openFilePicker,
                     ),
                   ),

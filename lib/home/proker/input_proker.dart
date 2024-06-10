@@ -14,6 +14,7 @@ class InputProker extends StatefulWidget {
 class _InputProkerState extends State<InputProker> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? _selectedFile;
+  String? _selectedFileName;
   int? _userId;
 
   TextEditingController _namaProkerController = TextEditingController();
@@ -119,12 +120,12 @@ class _InputProkerState extends State<InputProker> {
                       Expanded(
                         child: TextFormField(
                           decoration: _buildInputDecoration(
-                            labelText: 'Lampiran LPJ',
+                            labelText: 'Pilih File Proker',
                             prefixIcon: Icons.description,
                           ),
                           readOnly: true,
                           controller:
-                              TextEditingController(text: _selectedFile),
+                              TextEditingController(text: _selectedFileName),
                           onTap: _openFilePicker,
                         ),
                       ),
@@ -178,6 +179,7 @@ class _InputProkerState extends State<InputProker> {
     if (result != null && result.files.single.path != null) {
       setState(() {
         _selectedFile = result.files.single.path!;
+        _selectedFileName = result.files.single.name;
       });
     }
   }

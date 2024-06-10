@@ -19,6 +19,7 @@ class ProkerDetail extends StatefulWidget {
 
 class _ProkerDetailState extends State<ProkerDetail> {
   String? _selectedPdfPath;
+  String? _selectedFileName;
 
   final TextEditingController _namaProkerController = TextEditingController();
   final TextEditingController _deskripsiProkerController =
@@ -85,6 +86,7 @@ class _ProkerDetailState extends State<ProkerDetail> {
     if (result != null && result.files.single.path != null) {
       setState(() {
         _selectedPdfPath = result.files.single.path!;
+        _selectedFileName = result.files.single.name;
       });
     }
   }
@@ -248,10 +250,10 @@ class _ProkerDetailState extends State<ProkerDetail> {
                     Expanded(
                       child: TextFormField(
                         controller:
-                            TextEditingController(text: _selectedPdfPath),
+                            TextEditingController(text: _selectedFileName),
                         readOnly: true,
                         decoration: _buildDropDownDecoration(
-                          labelText: 'Pilih Lampiran PDF',
+                          labelText: 'Pilih File Proker',
                           prefixIcon: Icons.description,
                         ),
                         onTap: _pickPdf,

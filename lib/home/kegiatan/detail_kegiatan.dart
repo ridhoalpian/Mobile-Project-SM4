@@ -7,6 +7,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:intl/intl.dart';
 import 'package:projectone/database/apiutils.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class detailKegiatan extends StatefulWidget {
   final Map<String, dynamic> kegiatan;
@@ -29,6 +30,7 @@ class _detailKegiatanState extends State<detailKegiatan> {
   final TextEditingController _statusKegiatanController =
       TextEditingController();
   String? _selectedFile;
+  String? _selectedFileName;
 
   @override
   void initState() {
@@ -43,6 +45,11 @@ class _detailKegiatanState extends State<detailKegiatan> {
     _periodeController.text = widget.kegiatan['periode']?.toString() ?? '';
     _statusKegiatanController.text =
         widget.kegiatan['status_kegiatan']?.toString() ?? '';
+    if (_statusKegiatanController.text.toLowerCase() == 'pencairan') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showAwesomeConfirmationDialog();
+      });
+    }
   }
 
   String formatRupiah(dynamic amount) {
@@ -86,6 +93,55 @@ class _detailKegiatanState extends State<detailKegiatan> {
       AnimatedSnackBar.rectangle(
         'Error',
         'Gagal mengunduh proposal kegiatan',
+        type: AnimatedSnackBarType.error,
+        brightness: Brightness.light,
+        duration: Duration(seconds: 4),
+      ).show(context);
+    }
+  }
+
+  // Fungsi untuk menampilkan dialog konfirmasi menggunakan AwesomeDialog
+  Future<void> _showAwesomeConfirmationDialog() async {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.question,
+      headerAnimationLoop: false,
+      animType: AnimType.topSlide,
+      title: 'Konfirmasi',
+      desc: 'Apakah Anda sudah menerima dana pencairan?',
+      btnCancelText: 'Belum',
+      btnOkText: 'Sudah',
+      btnCancelOnPress: () {},
+      btnOkOnPress: () {
+        _updateStatusKegiatan('selesai');
+      },
+    )..show();
+  }
+
+// Fungsi untuk memperbarui status kegiatan
+  Future<void> _updateStatusKegiatan(String newStatus) async {
+    var url = Uri.parse(
+        ApiUtils.buildUrl('api/updatestatus/${widget.kegiatan['idkegiatan']}'));
+    var response = await http.post(url, body: {
+      'status_kegiatan': newStatus,
+    });
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _statusKegiatanController.text = newStatus;
+      });
+      AnimatedSnackBar.rectangle(
+        'Success',
+        'Status kegiatan berhasil diperbarui',
+        type: AnimatedSnackBarType.success,
+        brightness: Brightness.light,
+        duration: Duration(seconds: 4),
+      ).show(context);
+      Navigator.pop(context, true);
+    } else {
+      AnimatedSnackBar.rectangle(
+        'Error',
+        'Gagal memperbarui status kegiatan',
         type: AnimatedSnackBarType.error,
         brightness: Brightness.light,
         duration: Duration(seconds: 4),
@@ -255,22 +311,23 @@ class _detailKegiatanState extends State<detailKegiatan> {
               Row(
                 children: [
                   if (widget.isEditable)
-                  Expanded(
-                    child: TextFormField(
-                      decoration: _buildInputDecoration(
-                        labelText: 'Proposal Kegiatan',
-                        prefixIcon: Icons.description,
+                    Expanded(
+                      child: TextFormField(
+                        decoration: _buildInputDecoration(
+                          labelText: 'Proposal Kegiatan',
+                          prefixIcon: Icons.description,
+                        ),
+                        readOnly: true,
+                        controller:
+                            TextEditingController(text: _selectedFileName),
+                        onTap: _openFilePicker,
                       ),
-                      readOnly: true,
-                      controller: TextEditingController(text: _selectedFile),
-                      onTap: _openFilePicker,
                     ),
-                  ),
                   if (widget.isEditable)
-                  IconButton(
-                    icon: Icon(Icons.attach_file),
-                    onPressed: _openFilePicker,
-                  ),
+                    IconButton(
+                      icon: Icon(Icons.attach_file),
+                      onPressed: _openFilePicker,
+                    ),
                 ],
               ),
               SizedBox(height: 10),
@@ -314,6 +371,7 @@ class _detailKegiatanState extends State<detailKegiatan> {
     if (result != null && result.files.single.path != null) {
       setState(() {
         _selectedFile = result.files.single.path!;
+        _selectedFileName = result.files.single.name;
       });
     }
   }

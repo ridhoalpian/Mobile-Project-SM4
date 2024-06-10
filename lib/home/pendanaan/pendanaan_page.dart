@@ -14,6 +14,12 @@ class _DanaPageState extends State<DanaPage> {
   late Future<Map<String, dynamic>> futurePendanaan;
   int? _userId;
 
+  final TextEditingController _anggaranTersediaController = TextEditingController();
+  final TextEditingController _totalDanaController = TextEditingController();
+  final TextEditingController _sisaAnggaranController = TextEditingController();
+  final TextEditingController _periodeController = TextEditingController();
+  final TextEditingController _statusAnggaranController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -22,12 +28,12 @@ class _DanaPageState extends State<DanaPage> {
 
   Future<void> _initializeUserId() async {
     int? userId = await DBHelper.getUserId();
-    setState(() {
-      _userId = userId;
-      if (_userId != null) {
-        futurePendanaan = fetchPendanaan(_userId!);
-      }
-    });
+    if (userId != null) {
+      setState(() {
+        _userId = userId;
+        _refreshData();
+      });
+    }
   }
 
   String formatRupiah(dynamic amount) {
@@ -54,14 +60,18 @@ class _DanaPageState extends State<DanaPage> {
 
   Future<void> _refreshData() async {
     if (_userId != null) {
+      final data = await fetchPendanaan(_userId!);
       setState(() {
-        futurePendanaan = fetchPendanaan(_userId!);
+        _anggaranTersediaController.text = formatRupiah(data['anggaran_tersedia']);
+        _totalDanaController.text = formatRupiah(data['total_dana']);
+        _sisaAnggaranController.text = formatRupiah(data['sisa_anggaran']);
+        _periodeController.text = data['periode'];
+        _statusAnggaranController.text = data['status_anggaran'];
       });
     }
   }
 
-  InputDecoration _buildDropDownDecoration(
-      {String? labelText, IconData? prefixIcon}) {
+  InputDecoration _buildDropDownDecoration({String? labelText, IconData? prefixIcon}) {
     return InputDecoration(
       labelText: labelText,
       labelStyle: TextStyle(color: Colors.grey),
@@ -87,86 +97,71 @@ class _DanaPageState extends State<DanaPage> {
       backgroundColor: Colors.white,
       body: _userId == null
           ? Center(child: CircularProgressIndicator())
-          : FutureBuilder<Map<String, dynamic>>(
-              future: futurePendanaan,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return RefreshIndicator(
-                    onRefresh: _refreshData,
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Image.asset(
-                            'assets/images/pendanaan_ilustrasi.jpg',
-                            width: double.infinity,
-                            fit: BoxFit.contain,
-                          ),
-                          Text(
-                            'Informasi Dana:',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                          SizedBox(height: 20),
-                          TextFormField(
-                            initialValue: formatRupiah(
-                                snapshot.data!['anggaran_tersedia']),
-                            decoration: _buildDropDownDecoration(
-                              labelText: 'Anggaran Tersedia',
-                              prefixIcon: Icons.money,
-                            ),
-                            readOnly: true,
-                          ),
-                          SizedBox(height: 10),
-                          TextFormField(
-                            initialValue:
-                                formatRupiah(snapshot.data!['total_dana']),
-                            decoration: _buildDropDownDecoration(
-                              labelText: 'Anggaran Terpakai',
-                              prefixIcon: Icons.money,
-                            ),
-                            readOnly: true,
-                          ),
-                          SizedBox(height: 10),
-                          TextFormField(
-                            initialValue:
-                                formatRupiah(snapshot.data!['sisa_anggaran']),
-                            decoration: _buildDropDownDecoration(
-                              labelText: 'Anggaran Sisa',
-                              prefixIcon: Icons.money,
-                            ),
-                            readOnly: true,
-                          ),
-                          SizedBox(height: 10),
-                          TextFormField(
-                            initialValue: snapshot.data!['periode'],
-                            decoration: _buildDropDownDecoration(
-                              labelText: 'Periode',
-                              prefixIcon: Icons.calendar_today,
-                            ),
-                            readOnly: true,
-                          ),
-                          SizedBox(height: 10),
-                          TextFormField(
-                            initialValue: snapshot.data!['status_anggaran'],
-                            decoration: _buildDropDownDecoration(
-                              labelText: 'Status Anggaran',
-                              prefixIcon: Icons.description,
-                            ),
-                            readOnly: true,
-                          ),
-                        ],
-                      ),
+          : RefreshIndicator(
+              onRefresh: _refreshData,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Image.asset(
+                      'assets/images/pendanaan_ilustrasi.jpg',
+                      width: double.infinity,
+                      fit: BoxFit.contain,
                     ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('${snapshot.error}'));
-                }
-
-                return Center(child: CircularProgressIndicator());
-              },
+                    Text(
+                      'Informasi Dana:',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: _anggaranTersediaController,
+                      decoration: _buildDropDownDecoration(
+                        labelText: 'Anggaran Tersedia',
+                        prefixIcon: Icons.money,
+                      ),
+                      readOnly: true,
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: _totalDanaController,
+                      decoration: _buildDropDownDecoration(
+                        labelText: 'Anggaran Terpakai',
+                        prefixIcon: Icons.money,
+                      ),
+                      readOnly: true,
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: _sisaAnggaranController,
+                      decoration: _buildDropDownDecoration(
+                        labelText: 'Anggaran Sisa',
+                        prefixIcon: Icons.money,
+                      ),
+                      readOnly: true,
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: _periodeController,
+                      decoration: _buildDropDownDecoration(
+                        labelText: 'Periode',
+                        prefixIcon: Icons.calendar_today,
+                      ),
+                      readOnly: true,
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: _statusAnggaranController,
+                      decoration: _buildDropDownDecoration(
+                        labelText: 'Status Anggaran',
+                        prefixIcon: Icons.description,
+                      ),
+                      readOnly: true,
+                    ),
+                  ],
+                ),
+              ),
             ),
     );
   }
