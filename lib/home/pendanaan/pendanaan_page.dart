@@ -14,11 +14,13 @@ class _DanaPageState extends State<DanaPage> {
   late Future<Map<String, dynamic>> futurePendanaan;
   int? _userId;
 
-  final TextEditingController _anggaranTersediaController = TextEditingController();
+  final TextEditingController _anggaranTersediaController =
+      TextEditingController();
   final TextEditingController _totalDanaController = TextEditingController();
   final TextEditingController _sisaAnggaranController = TextEditingController();
   final TextEditingController _periodeController = TextEditingController();
-  final TextEditingController _statusAnggaranController = TextEditingController();
+  final TextEditingController _statusAnggaranController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -62,8 +64,10 @@ class _DanaPageState extends State<DanaPage> {
     if (_userId != null) {
       final data = await fetchPendanaan(_userId!);
       setState(() {
-        _anggaranTersediaController.text = formatRupiah(data['anggaran_tersedia']);
-        _totalDanaController.text = formatRupiah(data['total_dana']);
+        _anggaranTersediaController.text =
+            formatRupiah(data['anggaran_tersedia']);
+        _totalDanaController.text =
+            formatRupiah(data['total_anggaran_terpakai']);
         _sisaAnggaranController.text = formatRupiah(data['sisa_anggaran']);
         _periodeController.text = data['periode'];
         _statusAnggaranController.text = data['status_anggaran'];
@@ -71,7 +75,8 @@ class _DanaPageState extends State<DanaPage> {
     }
   }
 
-  InputDecoration _buildDropDownDecoration({String? labelText, IconData? prefixIcon}) {
+  InputDecoration _buildDropDownDecoration(
+      {String? labelText, IconData? prefixIcon}) {
     return InputDecoration(
       labelText: labelText,
       labelStyle: TextStyle(color: Colors.grey),
@@ -112,7 +117,8 @@ class _DanaPageState extends State<DanaPage> {
                     ),
                     Text(
                       'Informasi Dana:',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                     SizedBox(height: 20),
                     TextFormField(
